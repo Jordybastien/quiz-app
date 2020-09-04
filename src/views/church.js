@@ -3,7 +3,6 @@ import Select from 'react-select';
 import { Button, Progress, Modal, Result, Skeleton } from 'antd';
 import { connect } from 'react-redux';
 import BookService from '../components/bookService';
-import { handleNewBooking } from '../actions/booking';
 import { monthNames } from '../utils/churches';
 import { languages } from '../utils/languages';
 
@@ -42,15 +41,6 @@ class Church extends Component {
     data.serviceID = serviceId;
     data.MSISDN = '+25' + data.MSISDN;
 
-    this.props.dispatch(handleNewBooking(data)).then((res) => {
-      this.setState({ loading: false });
-
-      if (res.type !== 'LOG_ERROR') {
-        this.setState({ modal1Visible: false, modal2Visible: true });
-      } else {
-        this.setState({ errorMessage: res.error });
-      }
-    });
   };
 
   handleRequest = (serviceId, service) =>

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 class Homepage extends Component {
   state = {};
   render() {
-    const { churches, isAuth } = this.props;
+    const { isAuth } = this.props;
     if (window.screen.width > 600) {
     }
     return (
@@ -21,9 +21,6 @@ class Homepage extends Component {
                   />
                 </div>
                 <div className="menu-container">
-                  <div>
-                    <span className="nav-label mr-3">About us</span>
-                  </div>
                   {!isAuth ? (
                     <div onClick={() => this.props.history.push('/login')}>
                       <span className="nav-label">Login</span>
@@ -42,19 +39,19 @@ class Homepage extends Component {
               <div className="row">
                 <div className="col-md-8 pt-5">
                   <div className="mb-3">
-                    <span className="about-us-title">
-                      Booking Church Services
-                    </span>
+                    <span className="about-us-title">Quiz App</span>
                   </div>
                   <div>
                     <span className="about-us-description">
-                      During these unprecedented times where the world is
-                      fighting against COVID-19, one way to avoid the spread is
-                      to reduce crowds. <br />
-                      As churches are opening, one way of controlling crowds of
-                      congregants is by providing a way that they can book in
-                      advance their most preferable service since the number of
-                      attendants will be reduced to a smaller number.
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                      <br />
+                      Duis aute irure dolor in reprehenderit in voluptate velit
+                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
+                      sint occaecat cupidatat non proident, sunt in culpa qui
+                      officia deserunt mollit anim id est laborum.
                     </span>
                   </div>
                 </div>
@@ -66,7 +63,7 @@ class Homepage extends Component {
                   }`}
                 >
                   <img
-                    src={require('../assets/icon-2.png')}
+                    src={require('../assets/ill-3.svg')}
                     alt="ZTCC"
                     className="another-logo"
                   />
@@ -79,44 +76,40 @@ class Homepage extends Component {
               <div className="row">
                 <div className="col-md-3">
                   <img
-                    src={require('../assets/Cov-19.svg')}
+                    src={require('../assets/ill-4.svg')}
                     alt="ZTCC"
                     className="covid-img"
                   />
                 </div>
                 <div className="col-md-9">
                   <div className="mb-3">
-                    <span className="covid-title">Covid-19 Measures</span>
+                    <span className="covid-title">Quiz App</span>
                   </div>
                   <div>
                     <ul className="covid-list">
                       <li>
                         <span className="covid-list-item">
-                          Wear your face mask all the time.
+                          Lorem ipsum dolor sit amet
                         </span>
                       </li>
                       <li>
                         <span className="covid-list-item">
-                          Do not shake hands or give hugs.
+                          Lorem ipsum dolor sit amet
                         </span>
                       </li>
                       <li>
                         <span className="covid-list-item">
-                          People with colds and/ or fever (38 degrees or higher)
-                          stay at home. Upon entering, you will be asked by
-                          someone on the welcome team if you have fever or cold.
+                          Lorem ipsum dolor sit amet
                         </span>
                       </li>
                       <li>
                         <span className="covid-list-item">
-                          Keep 1.5 meters away both inside and outside the
-                          building.
+                          Lorem ipsum dolor sit amet
                         </span>
                       </li>
                       <li>
                         <span className="covid-list-item">
-                          Your hands will be sprayed with disinfectant gel upon
-                          entering.
+                          Lorem ipsum dolor sit amet
                         </span>
                       </li>
                     </ul>
@@ -166,7 +159,7 @@ class Homepage extends Component {
               </div>
             </div>
           </section>
-          <section id="churches-section" className="churches-section">
+          {/* <section id="churches-section" className="churches-section">
             <div className="container">
               <div className="row">
                 <div className="col-md-2">
@@ -194,7 +187,7 @@ class Homepage extends Component {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
           <section id="footer" className="footer">
             <div className="container my-3">
               <div className="row">
@@ -215,9 +208,8 @@ class Homepage extends Component {
   }
 }
 
-const mapStateToProps = ({ churches, authedUser }) => {
+const mapStateToProps = ({ authedUser }) => {
   return {
-    churches: Object.values(churches),
     isAuth: Object.keys(authedUser).length !== 0,
   };
 };

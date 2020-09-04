@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DatePicker, Switch, Slider, message, Modal, Spin } from 'antd';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { handleFetchingBookings } from '../../../actions/booking';
 import BookingsTable from '../bookingsTable';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -15,27 +14,9 @@ const MainBoard = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [service, setService] = useState(null);
-  const { services } = props;
+  // const { services } = props;
 
-  const handleServiceByDate = (selDate) =>
-    selDate && setSelectedDate(moment(selDate._d).format('YYYY-MM-DD'));
 
-  const handleBookings = (serviceID) => {
-    if (!selectedDate) {
-      return message.warning('Select Date Please');
-    }
-    setLoading(true);
-    setService(
-      services.filter((service) => service.serviceID === serviceID)[0]
-    );
-
-    props
-      .dispatch(handleFetchingBookings(serviceID, selectedDate))
-      .then(() => setLoading(false));
-    setModalVisible(true);
-  };
-
-  
   return (
     <Fragment>
       <Modal
@@ -49,18 +30,18 @@ const MainBoard = (props) => {
             : window.screen.width - 500
         }
       >
-        {!loading ? (
+        {/* {!loading ? (
           <BookingsTable service={service} />
         ) : (
           <div className="spinner-cont">
             <Spin size="large" />
           </div>
-        )}
+        )} */}
       </Modal>
 
       <div className="container m-5">
         <div className="row">
-          {services.length !== 0 && (
+          {/* {services.length !== 0 && (
             <div className="mt-3">
               <h4 className="church-service-datetime">
                 {moment(services[0].serviceDate)
@@ -71,7 +52,7 @@ const MainBoard = (props) => {
                   )}
               </h4>
             </div>
-          )}
+          )} */}
         </div>
         <div className="row">
           <div
@@ -85,19 +66,19 @@ const MainBoard = (props) => {
               <DatePicker
                 format={dateFormat}
                 placeholder="Search by date"
-                onChange={handleServiceByDate}
+                onChange
               />
             </div>
           </div>
         </div>
         <div className="row">
           <div className="dashboard-services-main-container">
-            {services &&
+            {/* {services &&
               services.map((service, index) => (
                 <div
                   className="dashboard-services-container"
                   key={index}
-                  onClick={() => handleBookings(service.serviceID)}
+                  onClick
                 >
                   <div className="dashboard-service-header">
                     <div>
@@ -141,7 +122,7 @@ const MainBoard = (props) => {
                     />
                   </div>
                 </div>
-              ))}
+              ))} */}
           </div>
         </div>
       </div>
@@ -149,10 +130,8 @@ const MainBoard = (props) => {
   );
 };
 
-const mapStateToProps = ({ churchServices }) => {
-  return {
-    services: Object.values(churchServices),
-  };
+const mapStateToProps = ({}) => {
+  return {};
 };
 
 export default connect(mapStateToProps)(MainBoard);

@@ -247,7 +247,7 @@ class Dashboard extends Component {
         <footer className="footer dashboard-footer">
           <div className="footer__signature">
             <span className="h6 secondary-color">
-              COPYRIGHT CHURCH SERVICES {new Date().getFullYear()}{' '}
+              COPYRIGHT QUIZ APP {new Date().getFullYear()}{' '}
             </span>
           </div>
         </footer>

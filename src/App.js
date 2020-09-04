@@ -9,9 +9,9 @@ class App extends Component {
   componentDidMount() {
     const user = refreshUser(this.props);
 
-    this.props.dispatch(handleInitialData());
+    // this.props.dispatch(handleInitialData());
 
-    user && this.props.dispatch(handleChurchData());
+    // user && this.props.dispatch(handleChurchData());
   }
   render() {
     refreshUser(this.props);
