@@ -4,6 +4,9 @@ import loading from './loading';
 import error from './error';
 import authedUser from './authedUser';
 import link from './callBackLink';
+import students from './students';
+import allQuizes from './allQuizes';
+import levelQuizes from './levelQuizes';
 
 export default combineReducers({
   form: formReducer,
@@ -11,4 +14,7 @@ export default combineReducers({
   error,
   authedUser,
   link,
+  students,
+  allQuizes,
+  levelQuizes,
 });

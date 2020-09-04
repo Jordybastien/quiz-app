@@ -1,5 +1,9 @@
 import React, { useState, Fragment } from 'react';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSearch,
+  faShieldAlt,
+  faLayerGroup,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DatePicker, Switch, Slider, message, Modal, Spin } from 'antd';
 import { connect } from 'react-redux';
@@ -14,8 +18,7 @@ const MainBoard = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [service, setService] = useState(null);
-  // const { services } = props;
-
+  const { authedUser } = props;
 
   return (
     <Fragment>
@@ -30,44 +33,29 @@ const MainBoard = (props) => {
             : window.screen.width - 500
         }
       >
-        {/* {!loading ? (
-          <BookingsTable service={service} />
-        ) : (
-          <div className="spinner-cont">
-            <Spin size="large" />
-          </div>
-        )} */}
+        {/* Content here */}
       </Modal>
 
       <div className="container m-5">
         <div className="row">
-          {/* {services.length !== 0 && (
-            <div className="mt-3">
-              <h4 className="church-service-datetime">
-                {moment(services[0].serviceDate)
-                  .format('LLLL')
-                  .substr(
-                    0,
-                    moment(services[0].serviceDate).format('LLLL').length - 9
-                  )}
-              </h4>
-            </div>
-          )} */}
-        </div>
-        <div className="row">
-          <div
-            className="calendar-container"
-            onClick={() => setShowHideCal(!showHideCal)}
-          >
-            <div>
-              <FontAwesomeIcon icon={faSearch} size="sm" color="#3e5561" />
-            </div>
-            <div className="search-text-container">
-              <DatePicker
-                format={dateFormat}
-                placeholder="Search by date"
-                onChange
-              />
+          <div className="main-overview">
+            <div className="overviewcard">
+              <div className="overviewcard__icon">
+                <FontAwesomeIcon
+                  icon={faShieldAlt}
+                  size="3x"
+                  color="#5C4DB1"
+                  className="mr-2"
+                />
+              </div>
+              <div className="overviewcard__info">
+                <div>
+                  <span className="stats-heading-title">{authedUser.levelId}</span>
+                </div>
+                <div>
+                  <span className="stats-heading-label">Level</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -130,8 +118,10 @@ const MainBoard = (props) => {
   );
 };
 
-const mapStateToProps = ({}) => {
-  return {};
+const mapStateToProps = ({ authedUser }) => {
+  return {
+    authedUser,
+  };
 };
 
 export default connect(mapStateToProps)(MainBoard);

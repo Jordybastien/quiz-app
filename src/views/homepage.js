@@ -133,7 +133,7 @@ class Homepage extends Component {
                     className="feature-img-square"
                   />
                   <div className="d-flex align-items-center pl-3">
-                    <span className="feature-label">Create Events</span>
+                    <span className="feature-label">Take Quiz</span>
                   </div>
                 </div>
                 <div className="col-md-4 d-flex flex-direction-row single-feature">
@@ -143,7 +143,7 @@ class Homepage extends Component {
                     className="feature-img"
                   />
                   <div className="d-flex align-items-center pl-3">
-                    <span className="feature-label">Report</span>
+                    <span className="feature-label">Receive Marks</span>
                   </div>
                 </div>
                 <div className="col-md-4 d-flex flex-direction-row single-feature">
@@ -153,7 +153,7 @@ class Homepage extends Component {
                     className="feature-img-square"
                   />
                   <div className="d-flex align-items-center pl-3">
-                    <span className="feature-label">Send SMS</span>
+                    <span className="feature-label">Get Promoted</span>
                   </div>
                 </div>
               </div>

@@ -5,6 +5,7 @@ import Homepage from '../views/homepage';
 import Dashboard from '../views/dashboard';
 import NotFound from '../views/notFound';
 import Login from '../views/login';
+import ProtectedRoute from '../components/protectedRoute';
 
 const Routing = () => {
   return (
@@ -12,7 +13,7 @@ const Routing = () => {
       <Switch>
         <Route path="/" exact component={Homepage} />
         <Route path="/church/:slug" component={Church} />
-        <Route path="/dashboard" component={Dashboard} />
+        <ProtectedRoute path="/dashboard" component={Dashboard} />
         <Route path="/login" component={Login} />
         <Route component={NotFound} />
       </Switch>

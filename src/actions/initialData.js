@@ -1,29 +1,46 @@
 import { showLoading, hideLoading } from './loading';
+import { fetchStudents } from '../services/student';
+import { fetchQuizes } from '../services/quiz';
+import { findLevelById } from '../services/level';
+import { getQuizes } from './quiz';
+import { getLevelQuizes } from './level';
+import { getStudents } from './student';
 
-// const getInitialData = async () => await fetchChurches();
+const getInitialData = async () => await fetchQuizes();
 
 export const handleInitialData = () => {
-  // return async (dispatch) => {
-  //   dispatch(showLoading());
-  //   return getInitialData()
-  //     .then((churches) => {
-  //       dispatch(getChurches(churches));
-  //       dispatch(hideLoading());
-  //     })
-  //     .catch(() => dispatch(hideLoading()));
-  // };
+  return async (dispatch) => {
+    dispatch(showLoading());
+    return getInitialData()
+      .then((quizes) => {
+        dispatch(getQuizes(quizes));
+        dispatch(hideLoading());
+      })
+      .catch(() => dispatch(hideLoading()));
+  };
 };
 
-export const handleChurchData = () => {
-  // return async (dispatch) => {
-  //   dispatch(showLoading());
-  //   return getChurchData()
-  //     .then((churchServices) => {
-  //       dispatch(getChurchServices(churchServices));
-  //       dispatch(hideLoading());
-  //     })
-  //     .catch(() => dispatch(hideLoading()));
-  // };
+export const handleAuthedData = (studentLevelId) => {
+  return async (dispatch) => {
+    dispatch(showLoading());
+    return getAuthedData(studentLevelId)
+      .then(({ students, levelQuizes }) => {
+        dispatch(getStudents(students));
+        dispatch(getLevelQuizes(levelQuizes));
+        dispatch(hideLoading());
+      })
+      .catch(() => dispatch(hideLoading()));
+  };
 };
 
-// const getChurchData = async () => await fetchChurchServices();
+const getAuthedData = async (studentLevelId) => {
+  const [students, levelQuizes] = await Promise.all([
+    fetchStudents(),
+    findLevelById(studentLevelId),
+  ]);
+
+  return {
+    students,
+    levelQuizes,
+  };
+};

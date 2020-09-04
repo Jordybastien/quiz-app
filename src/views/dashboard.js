@@ -51,7 +51,7 @@ class Dashboard extends Component {
 
           <header className="header header-responsive">
             <div className="header__element br-right pr-3">
-              <FontAwesomeIcon icon={faBell} size="2x" color="#42495b" />
+              {/* <FontAwesomeIcon icon={faBell} size="2x" color="#42495b" /> */}
             </div>
             <div className="header__element">
               <Menu mode="horizontal" className="home-menu">
@@ -70,7 +70,7 @@ class Dashboard extends Component {
                             alt="avatar"
                           /> */}
                           <span className="override-menu-dashboard mr-2">
-                            {`${authed.names}`}
+                            {`${authed.stdFname} ${authed.stdLname}`}
                           </span>
                         </div>
                         <FontAwesomeIcon

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Routing from './router';
 import { connect } from 'react-redux';
-import { handleInitialData, handleChurchData } from './actions/initialData';
+import { handleInitialData, handleAuthedData } from './actions/initialData';
 import { checkUser, tokenKey } from './services/auth';
 import { setAuthedUser } from './actions/authedUser';
 
@@ -9,9 +9,9 @@ class App extends Component {
   componentDidMount() {
     const user = refreshUser(this.props);
 
-    // this.props.dispatch(handleInitialData());
+    this.props.dispatch(handleInitialData());
 
-    // user && this.props.dispatch(handleChurchData());
+    user && this.props.dispatch(handleAuthedData(user.levelId));
   }
   render() {
     refreshUser(this.props);
