@@ -207,6 +207,9 @@ body {
 .ant-modal-content {
   border-radius: 10px !important;
 }
+.ant-modal-header {
+  border-radius: 10px !important;
+}
 
 .modal-title {
   font-size: 1.5em;

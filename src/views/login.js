@@ -132,6 +132,7 @@ class Login extends Component {
                       name="email"
                       error={errors.email}
                       onChange={(e) => this.handleEmail(e)}
+                      maxLength={10}
                     />
                   </div>
                 </div>

@@ -22,10 +22,10 @@ export const AdminRoutes = [
     goTo: '/dashboard/students',
   },
   {
-    activeRoute: 'quiz',
+    activeRoute: 'quizes',
     icon: faQuestionCircle,
     label: 'Quiz',
-    goTo: '/dashboard/quiz',
+    goTo: '/dashboard/quizes',
   },
   {
     activeRoute: 'levels',

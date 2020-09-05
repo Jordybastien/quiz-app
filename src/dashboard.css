@@ -433,6 +433,9 @@ body {
 .customized-select {
   width: 150px;
 }
+.another-select {
+  width: 100%;
+}
 .add-dashboard-btn {
   width: 50px !important;
   height: 50px !important;
@@ -605,4 +608,13 @@ body {
   .dashboard-services-main-container {
     grid-template-columns: 1fr !important;
   }
+}
+
+.dashboard-card {
+  margin: 0px 20px 0px 20px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #00000014;
+  box-shadow: 0 7px 12px 0 rgba(62, 57, 107, 0.16);
+  border-radius: 10px;
 }

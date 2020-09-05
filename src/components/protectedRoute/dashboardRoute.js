@@ -8,11 +8,14 @@ const DashboardRoute = ({
   path,
   component,
   dispatch,
-  role,
+  // TODO: Uncomment Role
+  // role,
   allowedRole,
   history,
   ...rest
 }) => {
+  // TODO: Delete Role
+  const role = 'Admin';
   // TODO: Change back to role and to allowedRole
   return role === allowedRole ? (
     <Route path={path} {...rest} component={component} />

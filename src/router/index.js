@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Church from '../views/church';
 import Homepage from '../views/homepage';
 import Dashboard from '../views/dashboard';
 import NotFound from '../views/notFound';
@@ -12,7 +11,6 @@ const Routing = () => {
     <Router>
       <Switch>
         <Route path="/" exact component={Homepage} />
-        <Route path="/church/:slug" component={Church} />
         <ProtectedRoute path="/dashboard" component={Dashboard} />
         <Route path="/login" component={Login} />
         <Route component={NotFound} />
