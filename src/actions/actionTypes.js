@@ -17,3 +17,4 @@ export const FETCH_QUIZES = 'FETCH_QUIZES';
 export const RECORD_QUIZ = 'RECORD_QUIZ';
 
 export const FETCH_LEVEL_QUIZES = 'FETCH_LEVEL_QUIZES';
+export const RECORD_LEVEL = 'RECORD_LEVEL';

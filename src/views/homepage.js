@@ -43,15 +43,13 @@ class Homepage extends Component {
                   </div>
                   <div>
                     <span className="about-us-description">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                      <br />
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident, sunt in culpa qui
-                      officia deserunt mollit anim id est laborum.
+                      This system enables the student as supplementary
+                      mechanisms to assist learning both inside and outside the
+                      available institutions of learning. This product aim is to
+                      develop a game application to power learning through an
+                      interactive game experience for assisted learning of
+                      mathematics and science concepts in early primary levels,
+                      it is a positive initiative towards the education goals
                     </span>
                   </div>
                 </div>
@@ -89,27 +87,29 @@ class Homepage extends Component {
                     <ul className="covid-list">
                       <li>
                         <span className="covid-list-item">
-                          Lorem ipsum dolor sit amet
+                          Improves problem-solving skills.
                         </span>
                       </li>
                       <li>
                         <span className="covid-list-item">
-                          Lorem ipsum dolor sit amet
+                          Improves attention and concentration.
                         </span>
                       </li>
                       <li>
                         <span className="covid-list-item">
-                          Lorem ipsum dolor sit amet
+                          It is different from the usual systematic learning
+                          tools.
                         </span>
                       </li>
                       <li>
                         <span className="covid-list-item">
-                          Lorem ipsum dolor sit amet
+                          This game increases the brain’s speed and enhances
+                          multitasking skills.
                         </span>
                       </li>
                       <li>
                         <span className="covid-list-item">
-                          Lorem ipsum dolor sit amet
+                          Controlled competitiveness.
                         </span>
                       </li>
                     </ul>

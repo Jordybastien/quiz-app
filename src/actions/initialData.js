@@ -36,7 +36,8 @@ export const handleAuthedData = (studentLevelId) => {
 const getAuthedData = async (studentLevelId) => {
   const [students, levelQuizes] = await Promise.all([
     fetchStudents(),
-    findLevelById(studentLevelId),
+    //TODO: Change back to levelId
+    findLevelById(4),
   ]);
 
   return {

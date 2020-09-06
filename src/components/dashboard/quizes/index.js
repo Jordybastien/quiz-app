@@ -54,27 +54,42 @@ class AllQuizesComponent extends Component {
 
     if (selectedOption.value === 'pdf') {
       const title = 'All Quizes';
-      const headers = [['#', 'Name', 'Address', 'Phone Number', 'Age']];
+      const headers = [
+        ['#', 'Type', 'Question', 'Answer', 'Response', 'Marks', 'Level'],
+      ];
 
       const data = this.state.allQuizes.map((elt) => [
         elt.rowNum,
-        elt.fullNames,
-        elt.address,
-        elt.MSISDN,
-        elt.age,
+        elt.type,
+        elt.question,
+        elt.answer,
+        elt.response,
+        elt.marks,
+        elt.levelId,
       ]);
       exportPDF(title, headers, data);
     } else {
       const CsvString = [];
-      CsvString.push(['\r\n', '#', 'Name', 'Address', 'Phone Number', 'Age']);
+      CsvString.push([
+        '\r\n',
+        '#',
+        'Type',
+        'Question',
+        'Answer',
+        'Response',
+        'Marks',
+        'Level',
+      ]);
 
       this.state.allQuizes.map((elt) =>
         CsvString.push('\r\n', [
           elt.rowNum,
-          elt.fullNames,
-          elt.address,
-          elt.MSISDN,
-          elt.age,
+          elt.type,
+          elt.question,
+          elt.answer,
+          elt.response,
+          elt.marks,
+          elt.levelId,
         ])
       );
       exportToCsv(CsvString);
@@ -159,7 +174,9 @@ class AllQuizesComponent extends Component {
     data.response = questionResponse;
     data.marks = marks;
     data.answer =
-      selectedType === 'singleChoice' ? `["${answers}"]` : `[${answers.split(',')}]`;
+      selectedType === 'singleChoice'
+        ? `["${answers}"]`
+        : `[${answers.split(',')}]`;
     data.levelId = selectedLevel;
     data.type = selectedType;
 
@@ -169,7 +186,7 @@ class AllQuizesComponent extends Component {
     }
 
     if (!questionResponse) {
-      errors.response = 'Respone is required';
+      errors.response = 'Response is required';
       response = false;
     }
     if (!answers) {
@@ -278,7 +295,7 @@ class AllQuizesComponent extends Component {
               />
             </Tooltip>
             <Modal
-              title="Add Student"
+              title="Add Quiz"
               centered
               visible={this.state.modal1Visible}
               footer={null}

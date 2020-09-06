@@ -6,6 +6,6 @@ export const findLevelById = async (id) => {
 };
 
 export const recordLevel = async (info) => {
-  const res = await api.post('/quizes/create', info);
+  const res = await api.post('/level/create', info);
   return res.data;
 };
