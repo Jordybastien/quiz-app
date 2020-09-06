@@ -8,15 +8,11 @@ const DashboardRoute = ({
   path,
   component,
   dispatch,
-  // TODO: Uncomment Role
-  // role,
+  role,
   allowedRole,
   history,
   ...rest
 }) => {
-  // TODO: Delete Role
-  const role = 'Admin';
-  // TODO: Change back to role and to allowedRole
   return role === allowedRole ? (
     <Route path={path} {...rest} component={component} />
   ) : (
@@ -32,8 +28,7 @@ DashboardRoute.propTypes = {
 const mapStateToProps = ({ authedUser }) => {
   return {
     isAuth: Object.keys(authedUser).length !== 0,
-    // TODO
-    // role: authedUser.role.name,
+    role: authedUser.type,
   };
 };
 

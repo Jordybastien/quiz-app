@@ -1,11 +1,16 @@
-import { faCog, faUsers, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faUsers,
+  faLayerGroup,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   faCalendarAlt,
   faQuestionCircle,
 } from '@fortawesome/free-regular-svg-icons';
 
 export const AllRoles = Object.freeze({
-  admin: 'Admin',
+  admin: 'admin',
+  students: 'students',
 });
 
 export const AdminRoutes = [
@@ -32,5 +37,19 @@ export const AdminRoutes = [
     icon: faLayerGroup,
     label: 'Levels',
     goTo: '/dashboard/levels',
+  },
+];
+export const StudentRoutes = [
+  {
+    activeRoute: 'dashboard',
+    icon: faCog,
+    label: 'Dashboard',
+    goTo: '/dashboard',
+  },
+  {
+    activeRoute: 'take-quiz',
+    icon: faQuestionCircle,
+    label: 'Take Quiz',
+    goTo: '/dashboard/take-quiz',
   },
 ];

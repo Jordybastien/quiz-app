@@ -24,8 +24,7 @@ const Routing = () => {
       <Router>
         <Switch>
           <Route path="/" exact component={Homepage} />
-          {/* TODO Bring Back Protected */}
-          <Route path="/dashboard" component={Dashboard} />
+          <ProtectedRoute path="/dashboard" component={Dashboard} />
           <Route path="/login" component={Login} />
           <Route component={NotFound} />
         </Switch>

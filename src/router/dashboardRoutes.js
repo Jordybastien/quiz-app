@@ -21,6 +21,11 @@ const DashboardRouting = () => {
         component={AllQuizesComponent}
         allowedRole={AllRoles.admin}
       />
+      {/* <DashboardRoute
+        path="/dashboard/take-quiz"
+        component={AllQuizesComponent}
+        allowedRole={AllRoles.students}
+      /> */}
     </>
   );
 };
