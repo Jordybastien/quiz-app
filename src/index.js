@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';

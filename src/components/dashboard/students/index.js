@@ -8,28 +8,37 @@ import { exportToCsv, exportPDF } from '../../../utils/fileGenerator';
 import TextBox from '../../textbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import SelectOption from '../../select';
+import { handleNewUser } from '../../../actions/student';
 
 const options = [
   { value: 'pdf', label: 'PDF' },
   { value: 'excel', label: 'Excel' },
+];
+const userOptions = [
+  { value: 'students', label: 'Students' },
+  { value: 'admin', label: 'Admin' },
 ];
 
 class StudentsComponent extends Component {
   state = {
     filteredInfo: null,
     sortedInfo: null,
-    bookings: this.props.bookings,
+    students: this.props.students,
     selectedOption: null,
     selectedLevel: null,
+    selectedType: null,
     modal1Visible: false,
     loading: false,
     stdFname: '',
     stdLname: '',
-    // age,
+    age: '',
+    MSISDN: '',
     errors: {
       stdFname: '',
       stdLname: '',
-      // age: '',
+      age: '',
+      MSISDN: '',
     },
   };
 
@@ -42,62 +51,174 @@ class StudentsComponent extends Component {
 
   handleSelect = (selectedOption) => {
     this.setState({ selectedOption });
-
+    const title = 'All Users';
     if (selectedOption.value === 'pdf') {
-      const { service } = this.props;
-      const title = `Bookings of the ${service.title} on ${moment(
-        service.serviceDate
-      )
-        .format('LLLL')
-        .substr(0, moment(service.serviceDate).format('LLLL').length - 9)}`;
-      const headers = [['#', 'Name', 'Address', 'Phone Number', 'Age']];
+      const headers = [
+        ['#', 'First Name', 'Last Name', 'Phone Number', 'Age', 'User Type'],
+      ];
 
-      const data = this.state.bookings.map((elt) => [
+      const data = this.state.students.map((elt) => [
         elt.rowNum,
-        elt.fullNames,
-        elt.address,
+        elt.stdFname,
+        elt.stdLname,
         elt.MSISDN,
         elt.age,
+        elt.type,
       ]);
       exportPDF(title, headers, data);
     } else {
       const CsvString = [];
-      CsvString.push(['\r\n', '#', 'Name', 'Address', 'Phone Number', 'Age']);
+      CsvString.push([
+        '\r\n',
+        '#',
+        'First Name',
+        'Last Name',
+        'Phone Number',
+        'Age',
+        'User Type',
+      ]);
 
-      this.state.bookings.map((elt) =>
+      this.state.students.map((elt) =>
         CsvString.push('\r\n', [
           elt.rowNum,
-          elt.fullNames,
-          elt.address,
+          elt.stdFname,
+          elt.stdLname,
           elt.MSISDN,
           elt.age,
+          elt.type,
         ])
       );
       exportToCsv(CsvString);
     }
   };
 
-  handleLevel = (selectedLevel) => this.setState({ selectedLevel });
+  handleLevel = ({ value }) => this.setState({ selectedLevel: value });
+
+  handleType = ({ value }) => this.setState({ selectedType: value });
+
+  handleFname = (e) => {
+    const { errors } = this.state;
+    errors.stdFname = '';
+    this.setState({ errors, stdFname: e.target.value });
+  };
+
+  handleLname = (e) => {
+    const { errors } = this.state;
+    errors.stdLname = '';
+    this.setState({ errors, stdLname: e.target.value });
+  };
+
+  handleAge = (e) => {
+    const { errors } = this.state;
+    errors.age = '';
+    this.setState({ errors, age: e.target.value });
+  };
+
+  handlePhone = (e) => {
+    const { errors } = this.state;
+    errors.MSISDN = '';
+    this.setState({ errors, MSISDN: e.target.value });
+  };
 
   handleSearch = (e) => {
     if (e.target.value !== '') {
-      const { bookings } = this.state;
+      const { students } = this.state;
       this.setState({
-        bookings: bookings.filter(
+        students: students.filter(
           (el) =>
-            el.fullNames.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            el.MSISDN.toLowerCase().includes(e.target.value.toLowerCase())
+            el.stdFname.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            el.stdLname.toLowerCase().includes(e.target.value.toLowerCase())
         ),
       });
     } else {
-      this.setState({ bookings: this.props.bookings });
+      this.setState({ students: this.props.students });
     }
   };
 
-  render() {
-    const { bookings, selectedOption, loading, selectedLevel } = this.state;
+  handleFormSubmit = () => {
+    const { data, response } = this.checkValidation();
+    if (response) {
+      data.MSISDN = '+25' + data.MSISDN;
+      this.setState({ loading: true });
+      this.props.dispatch(handleNewUser(data)).then((res) => {
+        this.setState({ loading: false });
+        if (res) {
+          this.setState({
+            modal1Visible: false,
+            students: this.props.students,
+          });
+        }
+      });
+    }
+  };
 
-    const { students, num } = this.props;
+  checkValidation = () => {
+    const {
+      MSISDN,
+      stdFname,
+      stdLname,
+      age,
+      selectedLevel,
+      selectedType,
+      errors,
+    } = this.state;
+    let response = true;
+    let data = {};
+
+    data.MSISDN = MSISDN;
+    data.stdFname = stdFname;
+    data.stdLname = stdLname;
+    data.age = age;
+    data.levelId = selectedLevel;
+    data.type = selectedType;
+
+    if (!MSISDN) {
+      errors.MSISDN = 'Phone Number is Required';
+      response = false;
+    } else if (isNaN(MSISDN)) {
+      errors.MSISDN = 'Phone Number must be numeric';
+      response = false;
+    } else if (MSISDN.length < 10 || MSISDN.length > 10) {
+      errors.MSISDN = 'Invalid Phone Number';
+      response = false;
+    }
+
+    if (!stdFname) {
+      errors.stdFname = 'First Name is required';
+      response = false;
+    }
+    if (!stdLname) {
+      errors.stdLname = 'First Name is required';
+      response = false;
+    }
+    if (!age) {
+      errors.age = 'First Name is required';
+      response = false;
+    }
+    if (!selectedLevel) {
+      errors.selectedLevel = 'Level is required';
+      response = false;
+    }
+    if (!selectedType) {
+      errors.selectedType = 'Level is required';
+      response = false;
+    }
+
+    this.setState({ errors });
+    return { data, response };
+  };
+
+  render() {
+    const {
+      selectedOption,
+      loading,
+      selectedLevel,
+      selectedType,
+      errors,
+      students,
+    } = this.state;
+
+    const { num, levelQuizes } = this.props;
 
     let { sortedInfo } = this.state;
     sortedInfo = sortedInfo || {};
@@ -136,6 +257,12 @@ class StudentsComponent extends Component {
         key: 'age',
         width: 100,
       },
+      {
+        title: 'User Type',
+        dataIndex: 'type',
+        key: 'type',
+        width: 100,
+      },
     ];
 
     return (
@@ -168,8 +295,8 @@ class StudentsComponent extends Component {
                   <div>
                     <TextBox
                       name="stdFname"
-                      // error={errors.email}
-                      // onChange={(e) => this.handleEmail(e)}
+                      error={errors.stdFname}
+                      onChange={(e) => this.handleFname(e)}
                     />
                   </div>
                 </div>
@@ -180,8 +307,8 @@ class StudentsComponent extends Component {
                   <div>
                     <TextBox
                       name="stdLname"
-                      // error={errors.password}
-                      // onChange={(e) => this.handlePassword(e)}
+                      error={errors.stdLname}
+                      onChange={(e) => this.handleLname(e)}
                     />
                   </div>
                 </div>
@@ -192,8 +319,8 @@ class StudentsComponent extends Component {
                   <div>
                     <TextBox
                       name="age"
-                      // error={errors.password}
-                      // onChange={(e) => this.handlePassword(e)}
+                      error={errors.age}
+                      onChange={(e) => this.handleAge(e)}
                     />
                   </div>
                 </div>
@@ -204,12 +331,12 @@ class StudentsComponent extends Component {
                   <div>
                     <TextBox
                       name="MSISDN"
-                      // error={errors.password}
-                      // onChange={(e) => this.handlePassword(e)}
+                      error={errors.MSISDN}
+                      onChange={(e) => this.handlePhone(e)}
                     />
                   </div>
                 </div>
-                <div className="row txt-box-container mb-5">
+                <div className="row txt-box-container">
                   <div>
                     <span className="input-label">Level</span>
                   </div>
@@ -217,7 +344,21 @@ class StudentsComponent extends Component {
                     <Select
                       value={selectedLevel}
                       onChange={this.handleLevel}
-                      options={options}
+                      options={levelQuizes}
+                      className="another-select"
+                      isSearchable={false}
+                    />
+                  </div>
+                </div>
+                <div className="row txt-box-container mb-5">
+                  <div>
+                    <span className="input-label">User Type</span>
+                  </div>
+                  <div>
+                    <Select
+                      value={selectedType}
+                      onChange={this.handleType}
+                      options={userOptions}
                       className="another-select"
                       isSearchable={false}
                     />
@@ -289,16 +430,17 @@ class StudentsComponent extends Component {
   }
 }
 
-const mapStateToProps = ({ students }) => ({
-  students,
-  bookings: students
-    .map((obj, index) => ({
-      ...obj,
-      key: index,
-      rowNum: index + 1,
-    }))
-    .reverse(),
-  num: students.length,
+const mapStateToProps = ({ students, levelQuizes }) => ({
+  students: Object.values(students).map((obj, index) => ({
+    ...obj,
+    key: index,
+    rowNum: index + 1,
+  })),
+  num: Object.values(students).length,
+  levelQuizes: Object.values(levelQuizes).map(({ level }) => ({
+    value: level,
+    label: level,
+  })),
 });
 
 export default connect(mapStateToProps)(StudentsComponent);

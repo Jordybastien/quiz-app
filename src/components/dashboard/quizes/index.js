@@ -1,21 +1,45 @@
 import React, { Component } from 'react';
-import { Table } from 'antd';
+import { Table, Tooltip, Button, Modal, Tag } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import moment from 'moment';
 import { exportToCsv, exportPDF } from '../../../utils/fileGenerator';
+import TextBox from '../../textbox';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { handleNewQuiz } from '../../../actions/quiz';
 
 const options = [
   { value: 'pdf', label: 'PDF' },
   { value: 'excel', label: 'Excel' },
 ];
 
+const questionTypes = [
+  { value: 'singleChoice', label: 'Single Choice' },
+  { value: 'multiChoice', label: 'Multiple Choice' },
+];
+
 class AllQuizesComponent extends Component {
   state = {
     filteredInfo: null,
     sortedInfo: null,
-    bookings: this.props.bookings,
+    allQuizes: this.props.allQuizes,
     selectedOption: null,
+    modal1Visible: false,
+    question: '',
+    response: '',
+    answers: '',
+    marks: '',
+    errors: {
+      question: '',
+      response: '',
+      answers: '',
+      marks: '',
+    },
+    loading: false,
+    selectedLevel: null,
+    selectedType: null,
   };
 
   handleChange = (pagination, filters, sorter) => {
@@ -29,15 +53,10 @@ class AllQuizesComponent extends Component {
     this.setState({ selectedOption });
 
     if (selectedOption.value === 'pdf') {
-      const { service } = this.props;
-      const title = `Bookings of the ${service.title} on ${moment(
-        service.serviceDate
-      )
-        .format('LLLL')
-        .substr(0, moment(service.serviceDate).format('LLLL').length - 9)}`;
+      const title = 'All Quizes';
       const headers = [['#', 'Name', 'Address', 'Phone Number', 'Age']];
 
-      const data = this.state.bookings.map((elt) => [
+      const data = this.state.allQuizes.map((elt) => [
         elt.rowNum,
         elt.fullNames,
         elt.address,
@@ -49,7 +68,7 @@ class AllQuizesComponent extends Component {
       const CsvString = [];
       CsvString.push(['\r\n', '#', 'Name', 'Address', 'Phone Number', 'Age']);
 
-      this.state.bookings.map((elt) =>
+      this.state.allQuizes.map((elt) =>
         CsvString.push('\r\n', [
           elt.rowNum,
           elt.fullNames,
@@ -64,23 +83,127 @@ class AllQuizesComponent extends Component {
 
   handleSearch = (e) => {
     if (e.target.value !== '') {
-      const { bookings } = this.state;
+      const { allQuizes } = this.state;
       this.setState({
-        bookings: bookings.filter(
+        allQuizes: allQuizes.filter(
           (el) =>
-            el.fullNames.toLowerCase().includes(e.target.value.toLowerCase()) ||
-            el.MSISDN.toLowerCase().includes(e.target.value.toLowerCase())
+            el.type.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            el.marks.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            el.levelId.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            el.response.toLowerCase().includes(e.target.value.toLowerCase())
         ),
       });
     } else {
-      this.setState({ bookings: this.props.bookings });
+      this.setState({ allQuizes: this.props.allQuizes });
     }
   };
 
-  render() {
-    const { bookings, selectedOption } = this.state;
+  handleQuestionType = ({ value }) => this.setState({ selectedType: value });
 
-    const { students, num } = this.props;
+  handleLevel = ({ value }) => this.setState({ selectedLevel: value });
+
+  handleQuestion = (e) => {
+    const { errors } = this.state;
+    errors.question = '';
+    this.setState({ errors, question: e.target.value });
+  };
+
+  handleResponse = (e) => {
+    const { errors } = this.state;
+    errors.response = '';
+    this.setState({ errors, response: e.target.value });
+  };
+
+  handleAnswers = (e) => {
+    const { errors } = this.state;
+    errors.answers = '';
+    this.setState({ errors, answers: e.target.value });
+  };
+
+  handleMarks = (e) => {
+    const { errors } = this.state;
+    errors.marks = '';
+    this.setState({ errors, marks: e.target.value });
+  };
+
+  handleFormSubmit = () => {
+    const { data, response } = this.checkValidation();
+    if (response) {
+      this.setState({ loading: true });
+      this.props.dispatch(handleNewQuiz(data)).then((res) => {
+        this.setState({ loading: false });
+        if (res) {
+          this.setState({
+            modal1Visible: false,
+            allQuizes: this.props.allQuizes,
+          });
+        }
+      });
+    }
+  };
+
+  checkValidation = () => {
+    const {
+      question,
+      response: questionResponse,
+      answers,
+      marks,
+      selectedLevel,
+      selectedType,
+      errors,
+    } = this.state;
+    let response = true;
+    let data = {};
+
+    data.question = question;
+    data.response = questionResponse;
+    data.marks = marks;
+    data.answer =
+      selectedType === 'singleChoice' ? `["${answers}"]` : `[${answers.split(',')}]`;
+    data.levelId = selectedLevel;
+    data.type = selectedType;
+
+    if (!question) {
+      errors.question = 'Question is Required';
+      response = false;
+    }
+
+    if (!questionResponse) {
+      errors.response = 'Respone is required';
+      response = false;
+    }
+    if (!answers) {
+      errors.answers = 'Answers are required';
+      response = false;
+    }
+    if (!marks) {
+      errors.marks = 'Marks are required';
+      response = false;
+    }
+    if (!selectedLevel) {
+      errors.selectedLevel = 'Level is required';
+      response = false;
+    }
+    if (!selectedType) {
+      errors.selectedType = 'Level is required';
+      response = false;
+    }
+
+    this.setState({ errors });
+    return { data, response };
+  };
+
+  render() {
+    const {
+      selectedOption,
+      allQuizes,
+      errors,
+      loading,
+      selectedLevel,
+      selectedType,
+    } = this.state;
+
+    const { num, levelQuizes } = this.props;
 
     let { sortedInfo } = this.state;
     sortedInfo = sortedInfo || {};
@@ -96,27 +219,45 @@ class AllQuizesComponent extends Component {
         width: 50,
       },
       {
-        title: 'First Name',
-        dataIndex: 'stdFname',
-        key: 'stdFname',
-        sorter: (a, b) => a.stdFname.length - b.stdFname.length,
-        sortOrder: sortedInfo.columnKey === 'stdFname' && sortedInfo.order,
+        title: 'Type',
+        dataIndex: 'type',
+        key: 'type',
+        sorter: (a, b) => a.type.length - b.type.length,
+        sortOrder: sortedInfo.columnKey === 'type' && sortedInfo.order,
         ellipsis: true,
       },
       {
-        title: 'Last Name',
-        dataIndex: 'stdLname',
-        key: 'stdLname',
+        title: 'Question',
+        dataIndex: 'question',
+        key: 'question',
       },
       {
-        title: 'Phone Number',
-        dataIndex: 'MSISDN',
-        key: 'MSISDN',
+        title: 'Answer',
+        dataIndex: 'answer',
+        key: 'answer',
+        render: (answer) => {
+          return (
+            <Tag color="geekblue" key={answer}>
+              {answer}
+            </Tag>
+          );
+        },
       },
       {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
+        title: 'Response',
+        dataIndex: 'response',
+        key: 'response',
+      },
+      {
+        title: 'Marks',
+        dataIndex: 'marks',
+        key: 'marks',
+        width: 100,
+      },
+      {
+        title: 'Level',
+        dataIndex: 'levelId',
+        key: 'levelId',
         width: 100,
       },
     ];
@@ -125,7 +266,125 @@ class AllQuizesComponent extends Component {
       <div className="container">
         <div className="row mb-5">{/* Content Here */}</div>
         <div className="row mb-3">
-          <div className="col-md-6">
+          <div className="col-md-4">
+            <Tooltip placement="right" title={<span>Add Quiz</span>}>
+              <Button
+                icon={<PlusOutlined className="add-dashboard-btn-icon" />}
+                type="primary"
+                shape="circle"
+                size={'large'}
+                className="main-bg-color override-btn add-dashboard-btn mb-3"
+                onClick={() => this.setState({ modal1Visible: true })}
+              />
+            </Tooltip>
+            <Modal
+              title="Add Student"
+              centered
+              visible={this.state.modal1Visible}
+              footer={null}
+              onCancel={() => this.setState({ modal1Visible: false })}
+            >
+              <div className="container">
+                <div className="row txt-box-container">
+                  <div>
+                    <span className="input-label">Question Type</span>
+                  </div>
+                  <div>
+                    <Select
+                      value={selectedType}
+                      onChange={this.handleQuestionType}
+                      options={questionTypes}
+                      className="another-select"
+                      isSearchable={false}
+                    />
+                  </div>
+                </div>
+                <div className="row txt-box-container">
+                  <div>
+                    <span className="input-label">Question</span>
+                  </div>
+                  <div>
+                    <TextBox
+                      name="question"
+                      error={errors.question}
+                      onChange={(e) => this.handleQuestion(e)}
+                    />
+                  </div>
+                </div>
+                <div className="row txt-box-container">
+                  <div>
+                    <span className="input-label">Response</span>
+                  </div>
+                  <div>
+                    <TextBox
+                      name="response"
+                      error={errors.response}
+                      onChange={(e) => this.handleResponse(e)}
+                    />
+                  </div>
+                </div>
+                <div className="row txt-box-container">
+                  <div>
+                    <span className="input-label">Answers</span>
+                  </div>
+                  <div>
+                    <TextBox
+                      name="answers"
+                      error={errors.answers}
+                      onChange={(e) => this.handleAnswers(e)}
+                    />
+                  </div>
+                </div>
+                <div className="row txt-box-container">
+                  <div>
+                    <span className="input-label">Marks</span>
+                  </div>
+                  <div>
+                    <TextBox
+                      name="marks"
+                      error={errors.marks}
+                      onChange={(e) => this.handleMarks(e)}
+                    />
+                  </div>
+                </div>
+                <div className="row txt-box-container mb-5">
+                  <div>
+                    <span className="input-label">Level</span>
+                  </div>
+                  <div>
+                    <Select
+                      value={selectedLevel}
+                      onChange={this.handleLevel}
+                      options={levelQuizes}
+                      className="another-select"
+                      isSearchable={false}
+                    />
+                  </div>
+                </div>
+                <div className="row submit-btn-container justify-content-center">
+                  <div>
+                    <Button
+                      type="primary"
+                      className="custom-btn"
+                      onClick={() => this.handleFormSubmit()}
+                    >
+                      {loading ? (
+                        <FontAwesomeIcon
+                          icon={faSpinner}
+                          size="sm"
+                          color="#fff"
+                          className="ml-2"
+                        />
+                      ) : (
+                        'Add'
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Modal>
+          </div>
+          <div className="col-md-4">
             <input
               type="text"
               className="dashboard-search-txtbox mb-3"
@@ -133,7 +392,7 @@ class AllQuizesComponent extends Component {
               onChange={this.handleSearch}
             />
           </div>
-          <div className="col-md-6 select-container">
+          <div className="col-md-4 select-container">
             <Select
               value={selectedOption}
               onChange={this.handleSelect}
@@ -146,13 +405,13 @@ class AllQuizesComponent extends Component {
         </div>
         <div className="dashboard-card">
           <div className="row mb-3">
-            <span className="modal-title">Students </span>
+            <span className="modal-title">All Quizes </span>
             <span>({num})</span>
           </div>
           <div className="row">
             <Table
               columns={columns}
-              dataSource={students}
+              dataSource={allQuizes}
               onChange={this.handleChange}
               pagination={{
                 defaultPageSize: 10,
@@ -168,16 +427,17 @@ class AllQuizesComponent extends Component {
   }
 }
 
-const mapStateToProps = ({ students }) => ({
-  students,
-  bookings: students
-    .map((obj, index) => ({
-      ...obj,
-      key: index,
-      rowNum: index + 1,
-    }))
-    .reverse(),
-  num: students.length,
+const mapStateToProps = ({ allQuizes, levelQuizes }) => ({
+  allQuizes: Object.values(allQuizes).map((obj, index) => ({
+    ...obj,
+    key: index,
+    rowNum: index + 1,
+  })),
+  num: Object.values(allQuizes).length,
+  levelQuizes: Object.values(levelQuizes).map(({ level, levelId }) => ({
+    value: levelId,
+    label: level,
+  })),
 });
 
 export default connect(mapStateToProps)(AllQuizesComponent);

@@ -12,7 +12,7 @@ const DashboardRouting = () => {
       <Route path="/dashboard" exact component={MainBoard} />
       {/* Admin Routes */}
       <DashboardRoute
-        path="/dashboard/students"
+        path="/dashboard/users"
         component={StudentsComponent}
         allowedRole={AllRoles.admin}
       />

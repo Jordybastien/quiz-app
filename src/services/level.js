@@ -1,7 +1,7 @@
 import api from './api';
 
 export const findLevelById = async (id) => {
-  const res = await api.get(`/api/level/${id}`);
+  const res = await api.get(`/level/${id}`);
   return res.data.meta.content;
 };
 

@@ -5,17 +5,32 @@ import Dashboard from '../views/dashboard';
 import NotFound from '../views/notFound';
 import Login from '../views/login';
 import ProtectedRoute from '../components/protectedRoute';
+import ReduxToastr from 'react-redux-toastr';
 
 const Routing = () => {
   return (
-    <Router>
-      <Switch>
-        <Route path="/" exact component={Homepage} />
-        <ProtectedRoute path="/dashboard" component={Dashboard} />
-        <Route path="/login" component={Login} />
-        <Route component={NotFound} />
-      </Switch>
-    </Router>
+    <>
+      <ReduxToastr
+        timeOut={4000}
+        newestOnTop={false}
+        preventDuplicates
+        position="top-right"
+        transitionIn="fadeIn"
+        transitionOut="fadeOut"
+        getState={(state) => state.toastr}
+        progressBar
+        closeOnToastrClick
+      />
+      <Router>
+        <Switch>
+          <Route path="/" exact component={Homepage} />
+          {/* TODO Bring Back Protected */}
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/login" component={Login} />
+          <Route component={NotFound} />
+        </Switch>
+      </Router>
+    </>
   );
 };
 

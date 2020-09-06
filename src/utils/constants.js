@@ -16,10 +16,10 @@ export const AdminRoutes = [
     goTo: '/dashboard',
   },
   {
-    activeRoute: 'students',
+    activeRoute: 'users',
     icon: faUsers,
-    label: 'Students',
-    goTo: '/dashboard/students',
+    label: 'Users',
+    goTo: '/dashboard/users',
   },
   {
     activeRoute: 'quizes',

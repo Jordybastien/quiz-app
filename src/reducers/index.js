@@ -7,9 +7,11 @@ import link from './callBackLink';
 import students from './students';
 import allQuizes from './allQuizes';
 import levelQuizes from './levelQuizes';
+import { reducer as toastrReducer } from 'react-redux-toastr';
 
 export default combineReducers({
   form: formReducer,
+  toastr: toastrReducer,
   loading,
   error,
   authedUser,
