@@ -5,6 +5,7 @@ import MainBoard from '../components/dashboard/mainBoard';
 import StudentsComponent from '../components/dashboard/students';
 import AllQuizesComponent from '../components/dashboard/quizes';
 import Levels from '../components/dashboard/levels';
+import TakeQuizComponent from '../components/dashboard/takeQuiz';
 import { AllRoles } from '../utils/constants';
 
 const DashboardRouting = () => {
@@ -27,11 +28,11 @@ const DashboardRouting = () => {
         component={Levels}
         allowedRole={AllRoles.admin}
       />
-      {/* <DashboardRoute
+      <DashboardRoute
         path="/dashboard/take-quiz"
-        component={AllQuizesComponent}
+        component={TakeQuizComponent}
         allowedRole={AllRoles.students}
-      /> */}
+      />
     </>
   );
 };

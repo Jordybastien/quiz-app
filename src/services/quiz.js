@@ -10,7 +10,7 @@ export const recordQuiz = async (info) => {
   return res.data;
 };
 
-export const submitAnsweres = async (info) => {
-  const res = await api.post('/quizes/answers', info);
+export const submitAnswers = async (info) => {
+  const res = await api.post('/quiz/answers', info);
   return res.data;
 };

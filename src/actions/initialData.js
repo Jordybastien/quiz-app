@@ -1,9 +1,9 @@
 import { showLoading, hideLoading } from './loading';
 import { fetchStudents } from '../services/student';
 import { fetchQuizes } from '../services/quiz';
-import { findLevelById } from '../services/level';
+import { findLevelById, fetchAllLevels } from '../services/level';
 import { getQuizes } from './quiz';
-import { getLevelQuizes } from './level';
+import { getLevelQuizes, getLevels } from './level';
 import { getStudents } from './student';
 
 const getInitialData = async () => await fetchQuizes();
@@ -24,8 +24,9 @@ export const handleAuthedData = (studentLevelId) => {
   return async (dispatch) => {
     dispatch(showLoading());
     return getAuthedData(studentLevelId)
-      .then(({ students, levelQuizes }) => {
+      .then(({ students, levels, levelQuizes }) => {
         dispatch(getStudents(students));
+        dispatch(getLevels(levels));
         dispatch(getLevelQuizes(levelQuizes));
         dispatch(hideLoading());
       })
@@ -34,14 +35,16 @@ export const handleAuthedData = (studentLevelId) => {
 };
 
 const getAuthedData = async (studentLevelId) => {
-  const [students, levelQuizes] = await Promise.all([
+  const [students, levels, levelQuizes] = await Promise.all([
     fetchStudents(),
-    //TODO: Change back to levelId
+    fetchAllLevels(),
+    // TODO: Switch back studentLevelId
     findLevelById(4),
   ]);
 
   return {
     students,
+    levels,
     levelQuizes,
   };
 };

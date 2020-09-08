@@ -1,4 +1,8 @@
-import { FETCH_LEVEL_QUIZES, RECORD_LEVEL } from './actionTypes';
+import {
+  FETCH_LEVEL_QUIZES,
+  RECORD_LEVEL,
+  FETCH_ALL_LEVELS,
+} from './actionTypes';
 import { logError } from './error';
 import { toastr } from 'react-redux-toastr';
 import { recordLevel } from '../services/level';
@@ -7,6 +11,13 @@ export const getLevelQuizes = (levelQuizes) => {
   return {
     type: FETCH_LEVEL_QUIZES,
     levelQuizes,
+  };
+};
+
+export const getLevels = (levels) => {
+  return {
+    type: FETCH_ALL_LEVELS,
+    levels,
   };
 };
 

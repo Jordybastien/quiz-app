@@ -1,7 +1,7 @@
 import { FETCH_QUIZES, RECORD_QUIZ } from './actionTypes';
 import { logError } from './error';
 import { toastr } from 'react-redux-toastr';
-import { recordQuiz } from '../services/quiz';
+import { recordQuiz, submitAnswers } from '../services/quiz';
 
 export const getQuizes = (allQuizes) => {
   return {
@@ -30,6 +30,20 @@ export const handleNewQuiz = (data) => {
     } catch (error) {
       toastr.error('Error', 'Failed to Record Quiz, Please contact Us');
       return dispatch(logError('Failed to Record Quiz, Please contact Us'));
+    }
+  };
+};
+
+export const handleSubmitQuiz = (data) => {
+  return async (dispatch) => {
+    try {
+      const response = await submitAnswers(data);
+      return response.passed;
+    } catch (error) {
+      toastr.error('Error', 'Failed to Submit Quiz Answers, Please contact Us');
+      return dispatch(
+        logError('Failed to Submit Quiz Answers, Please contact Us')
+      );
     }
   };
 };

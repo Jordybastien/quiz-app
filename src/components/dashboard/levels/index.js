@@ -239,24 +239,24 @@ class LevelsComponent extends Component {
         dataIndex: 'passingRate',
         key: 'passingRate',
       },
-      {
-        title: 'Number of quizes',
-        dataIndex: 'quizes',
-        key: 'quizes',
-        width: 100,
-        render: (quizes) => {
-          return quizes ? quizes.length : 0;
-        },
-      },
-      {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-          <Button type="primary" onClick={() => this.handleViewMore(record)}>
-            View Quizes
-          </Button>
-        ),
-      },
+      // {
+      //   title: 'Number of quizes',
+      //   dataIndex: 'quizes',
+      //   key: 'quizes',
+      //   width: 100,
+      //   render: (quizes) => {
+      //     return quizes ? quizes.length : 0;
+      //   },
+      // },
+      // {
+      //   title: 'Action',
+      //   key: 'action',
+      //   render: (text, record) => (
+      //     <Button type="primary" onClick={() => this.handleViewMore(record)}>
+      //       View Quizes
+      //     </Button>
+      //   ),
+      // },
     ];
 
     return (
@@ -377,7 +377,7 @@ class LevelsComponent extends Component {
                 </div>
                 <div className="row txt-box-container">
                   <div>
-                    <span className="input-label">Level(Numeri value)</span>
+                    <span className="input-label">Level(Numeric value)</span>
                   </div>
                   <div>
                     <TextBox
@@ -465,7 +465,7 @@ class LevelsComponent extends Component {
   }
 }
 
-const mapStateToProps = ({ levelQuizes }) => ({
+const mapStateToProps = ({ levels: levelQuizes }) => ({
   levelQuizes: Object.values(levelQuizes).map((obj, index) => ({
     ...obj,
     key: index,

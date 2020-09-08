@@ -92,9 +92,9 @@ class StudentsComponent extends Component {
     }
   };
 
-  handleLevel = ({ value }) => this.setState({ selectedLevel: value });
+  handleLevel = (selectedLevel) => this.setState({ selectedLevel });
 
-  handleType = ({ value }) => this.setState({ selectedType: value });
+  handleType = (selectedType) => this.setState({ selectedType });
 
   handleFname = (e) => {
     const { errors } = this.state;
@@ -169,8 +169,8 @@ class StudentsComponent extends Component {
     data.stdFname = stdFname;
     data.stdLname = stdLname;
     data.age = age;
-    data.levelId = selectedLevel;
-    data.type = selectedType;
+    data.levelId = selectedLevel && selectedLevel.value;
+    data.type = selectedType && selectedType.value;
 
     if (!MSISDN) {
       errors.MSISDN = 'Phone Number is Required';
@@ -430,16 +430,16 @@ class StudentsComponent extends Component {
   }
 }
 
-const mapStateToProps = ({ students, levelQuizes }) => ({
+const mapStateToProps = ({ students, levels: levelQuizes }) => ({
   students: Object.values(students).map((obj, index) => ({
     ...obj,
     key: index,
     rowNum: index + 1,
   })),
   num: Object.values(students).length,
-  levelQuizes: Object.values(levelQuizes).map(({ level }) => ({
+  levelQuizes: Object.values(levelQuizes).map(({ level, levelName }) => ({
     value: level,
-    label: level,
+    label: levelName,
   })),
 });
 

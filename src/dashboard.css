@@ -618,3 +618,57 @@ body {
   box-shadow: 0 7px 12px 0 rgba(62, 57, 107, 0.16);
   border-radius: 10px;
 }
+
+.card-box {
+  width: 100%;
+  max-width: 590px;
+  display: grid;
+  margin: 10px 0px 10px 0px;
+  border: 1px solid #dad7d7;
+  border-radius: 3px;
+}
+.card-heading {
+  background: #00000012;
+  padding: 10px 0px 10px 0px;
+  border-bottom: 1px solid #dad7d7;
+}
+.poll-body {
+  display: flex;
+  padding: 10px;
+}
+.question-avatar-body {
+  width: 140px;
+  padding: 0px 10px 0px 0px;
+}
+.question-avatar {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+}
+.new-login-form {
+  padding: 10px;
+}
+.poll-question {
+  margin-bottom: 20px;
+}
+.custom-btn {
+  border-radius: 5px;
+  border: 1px solid #5d4eb1 !important;
+  background-color: #5d4eb1!important;
+}
+.form-check {
+  position: relative;
+  display: block;
+  padding-left: 1.25rem;
+}
+.form-check-input {
+  position: absolute;
+  margin-top: 0.3rem;
+  margin-left: -1.25rem;
+}
+.form-check-label {
+  margin-bottom: 0;
+}
+.ant-pagination-options {
+  display: none!important;
+}

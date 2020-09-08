@@ -113,9 +113,9 @@ class AllQuizesComponent extends Component {
     }
   };
 
-  handleQuestionType = ({ value }) => this.setState({ selectedType: value });
+  handleQuestionType = (selectedType) => this.setState({ selectedType });
 
-  handleLevel = ({ value }) => this.setState({ selectedLevel: value });
+  handleLevel = (selectedLevel) => this.setState({ selectedLevel });
 
   handleQuestion = (e) => {
     const { errors } = this.state;
@@ -177,8 +177,8 @@ class AllQuizesComponent extends Component {
       selectedType === 'singleChoice'
         ? `["${answers}"]`
         : `[${answers.split(',')}]`;
-    data.levelId = selectedLevel;
-    data.type = selectedType;
+    data.levelId = selectedLevel && selectedLevel.value;
+    data.type = selectedType && selectedType.value;
 
     if (!question) {
       errors.question = 'Question is Required';
@@ -444,16 +444,16 @@ class AllQuizesComponent extends Component {
   }
 }
 
-const mapStateToProps = ({ allQuizes, levelQuizes }) => ({
+const mapStateToProps = ({ allQuizes, levels: levelQuizes }) => ({
   allQuizes: Object.values(allQuizes).map((obj, index) => ({
     ...obj,
     key: index,
     rowNum: index + 1,
   })),
   num: Object.values(allQuizes).length,
-  levelQuizes: Object.values(levelQuizes).map(({ level, levelId }) => ({
-    value: levelId,
-    label: level,
+  levelQuizes: Object.values(levelQuizes).map(({ levelName, level }) => ({
+    value: level,
+    label: levelName,
   })),
 });
 
