@@ -38,8 +38,7 @@ const getAuthedData = async (studentLevelId) => {
   const [students, levels, levelQuizes] = await Promise.all([
     fetchStudents(),
     fetchAllLevels(),
-    // TODO: Switch back studentLevelId
-    findLevelById(4),
+    findLevelById(studentLevelId),
   ]);
 
   return {
