@@ -437,9 +437,9 @@ const mapStateToProps = ({ students, levels: levelQuizes }) => ({
     rowNum: index + 1,
   })),
   num: Object.values(students).length,
-  levelQuizes: Object.values(levelQuizes).map(({ level, levelName }) => ({
+  levelQuizes: Object.values(levelQuizes).map(({ level }) => ({
     value: level,
-    label: levelName,
+    label: level,
   })),
 });
 
