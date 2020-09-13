@@ -2,7 +2,7 @@ import { showLoading, hideLoading } from './loading';
 import { fetchStudents } from '../services/student';
 import { fetchQuizes } from '../services/quiz';
 import { findLevelById, fetchAllLevels } from '../services/level';
-import { getQuizes } from './quiz';
+import { getQuizes, getNewLevelDetails, getNewLevelQuizes } from './quiz';
 import { getLevelQuizes, getLevels } from './level';
 import { getStudents } from './student';
 
@@ -27,6 +27,8 @@ export const handleAuthedData = (studentLevelId) => {
       .then(({ students, levels, levelQuizes }) => {
         dispatch(getStudents(students));
         dispatch(getLevels(levels));
+        dispatch(getNewLevelDetails(levelQuizes.level));
+        dispatch(getNewLevelQuizes(levelQuizes.quizzes));
         dispatch(getLevelQuizes(levelQuizes));
         dispatch(hideLoading());
       })

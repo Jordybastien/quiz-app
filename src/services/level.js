@@ -2,7 +2,7 @@ import api from './api';
 
 export const findLevelById = async (id) => {
   const res = await api.get(`/level/${id}`);
-  return res.data.meta.content;
+  return res.data.meta;
 };
 
 export const fetchAllLevels = async () => {

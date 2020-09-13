@@ -1,4 +1,9 @@
-import { FETCH_QUIZES, RECORD_QUIZ } from './actionTypes';
+import {
+  FETCH_QUIZES,
+  RECORD_QUIZ,
+  FETCH_NEW_LEVEL_DETAILS,
+  FETCH_NEW_LEVEL_QUIZES,
+} from './actionTypes';
 import { logError } from './error';
 import { toastr } from 'react-redux-toastr';
 import { recordQuiz, submitAnswers } from '../services/quiz';
@@ -7,6 +12,20 @@ export const getQuizes = (allQuizes) => {
   return {
     type: FETCH_QUIZES,
     allQuizes,
+  };
+};
+
+export const getNewLevelDetails = (newLevelDetails) => {
+  return {
+    type: FETCH_NEW_LEVEL_DETAILS,
+    newLevelDetails,
+  };
+};
+
+export const getNewLevelQuizes = (newLevelQuizes) => {
+  return {
+    type: FETCH_NEW_LEVEL_QUIZES,
+    newLevelQuizes,
   };
 };
 

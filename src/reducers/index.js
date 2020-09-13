@@ -9,6 +9,8 @@ import allQuizes from './allQuizes';
 import levelQuizes from './levelQuizes';
 import { reducer as toastrReducer } from 'react-redux-toastr';
 import levels from './levels';
+import newLevelDetails from './newLevelDetails';
+import newLevelQuizes from './newLevelQuizes';
 
 export default combineReducers({
   form: formReducer,
@@ -21,4 +23,6 @@ export default combineReducers({
   allQuizes,
   levelQuizes,
   levels,
+  newLevelDetails,
+  newLevelQuizes,
 });

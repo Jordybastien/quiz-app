@@ -99,8 +99,8 @@ class TakeQuiz extends Component {
       modal2Visible,
       finalResponse,
     } = this.state;
-    const { num } = this.props;
-
+    const { num, newLevelDetails } = this.props;
+    
     return (
       <div className="container pt-5">
         <Modal
@@ -118,7 +118,7 @@ class TakeQuiz extends Component {
           )}
         </Modal>
         <div className="dashboard-card p-3">
-          {levelQuiz ? (
+          {levelQuiz.length !== 0 && newLevelDetails ? (
             <>
               <div className="row mb-3 px-3 d-flex justify-content-between border-bottom pb-3">
                 <div>
@@ -127,17 +127,17 @@ class TakeQuiz extends Component {
                 <div className="d-flex flex-column">
                   <div>
                     <span className="font-weight-bold">Level Name: </span>
-                    <span>{levelQuiz.levelName}</span>
+                    <span>{newLevelDetails.levelName}</span>
                   </div>
                   <div>
                     <span className="font-weight-bold">
                       Level Description:{' '}
                     </span>
-                    <span>{levelQuiz.levelDescription}</span>
+                    <span>{newLevelDetails.levelDescription}</span>
                   </div>
                   <div>
                     <span className="font-weight-bold">Passing Rate: </span>
-                    <span>{levelQuiz.passingRate}</span>
+                    <span>{newLevelDetails.passingRate}</span>
                   </div>
                 </div>
               </div>
@@ -157,30 +157,32 @@ class TakeQuiz extends Component {
                         >
                           <div className="poll-question d-flex flex-column align-items-center">
                             <h5 className="font-weight-bold text-center">
-                              {levelQuiz.quizes[count].question}
+                              {levelQuiz[count] && levelQuiz[count].question}
                             </h5>
-                            {levelQuiz.quizes[count].type === 'multiChoice' ? (
+                            {levelQuiz[count] &&
+                            levelQuiz[count].type === 'multiChoice' ? (
                               <div
                                 className="multipleChoice"
                                 id="multipleChoice"
                               >
-                                {levelQuiz.quizes[count].answer
-                                  .slice(1, -1)
-                                  .split(',')
-                                  .map((answer, index) => (
-                                    <div className="form-check" key={answer}>
-                                      <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="exampleRadios"
-                                        value={answer}
-                                        onChange={this.handleChangeAnswer}
-                                      />
-                                      <label className="form-check-label">
-                                        {answer}
-                                      </label>
-                                    </div>
-                                  ))}
+                                {levelQuiz[count] &&
+                                  levelQuiz[count].answer
+                                    .slice(1, -1)
+                                    .split(',')
+                                    .map((answer, index) => (
+                                      <div className="form-check" key={answer}>
+                                        <input
+                                          className="form-check-input"
+                                          type="radio"
+                                          name="exampleRadios"
+                                          value={answer}
+                                          onChange={this.handleChangeAnswer}
+                                        />
+                                        <label className="form-check-label">
+                                          {answer}
+                                        </label>
+                                      </div>
+                                    ))}
                               </div>
                             ) : (
                               <TextBox
@@ -192,15 +194,16 @@ class TakeQuiz extends Component {
                               />
                             )}
                           </div>
-                          {levelQuiz.quizes[count].type === 'multiChoice' ? (
+                          {levelQuiz[count] &&
+                          levelQuiz[count].type === 'multiChoice' ? (
                             <button
                               className="btn btn-primary btn-block custom-btn"
                               type="button"
                               disabled={multipleChoiceAnswer === ''}
                               onClick={() =>
                                 this.handleSubmit(
-                                  levelQuiz.quizes[count].type,
-                                  levelQuiz.quizes[count].QId
+                                  levelQuiz[count].type,
+                                  levelQuiz[count].QId
                                 )
                               }
                             >
@@ -213,8 +216,8 @@ class TakeQuiz extends Component {
                               disabled={singleChoiceAnswer === ''}
                               onClick={() =>
                                 this.handleSubmit(
-                                  levelQuiz.quizes[count].type,
-                                  levelQuiz.quizes[count].QId
+                                  levelQuiz[count].type,
+                                  levelQuiz[count].QId
                                 )
                               }
                             >
@@ -235,14 +238,7 @@ class TakeQuiz extends Component {
                   defaultPageSize={1}
                   onChange={this.handlePagination}
                 />
-                {/* <button
-                  className="btn btn-primary btn-block custom-btn ml-3"
-                  type="button"
-                  disabled={num !== answers.length + 1}
-                  onClick={() => this.handleFinalSubmit}
-                >
-                  Submit
-                </button> */}
+
                 <Popconfirm
                   placement="top"
                   title="Are you sure to submit the response?"
@@ -276,15 +272,12 @@ class TakeQuiz extends Component {
   }
 }
 
-const mapStateToProps = ({ levelQuizes, authedUser }) => {
+const mapStateToProps = ({ authedUser, newLevelDetails, newLevelQuizes }) => {
   return {
-    levelQuiz: levelQuizes.length !== 0 && levelQuizes[0],
-    num:
-      levelQuizes.length !== 0 &&
-      levelQuizes[0] &&
-      levelQuizes[0].quizes &&
-      levelQuizes[0].quizes.length,
+    levelQuiz: newLevelQuizes.length !== 0 && newLevelQuizes,
+    num: newLevelQuizes.length,
     stdId: authedUser.stdId,
+    newLevelDetails,
   };
 };
 
