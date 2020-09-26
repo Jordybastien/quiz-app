@@ -207,6 +207,7 @@ class LevelsComponent extends Component {
     } = this.state;
 
     const { num } = this.props;
+    
 
     let { sortedInfo } = this.state;
     sortedInfo = sortedInfo || {};

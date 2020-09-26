@@ -187,6 +187,7 @@ class TakeQuiz extends Component {
                             ) : (
                               <TextBox
                                 name="singleChoiceAnswer"
+                                value={singleChoiceAnswer}
                                 error={errors.singleChoiceAnswer}
                                 onChange={(e) =>
                                   this.handleSingleChoiceAnswer(e)
