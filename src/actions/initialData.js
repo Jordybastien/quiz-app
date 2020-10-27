@@ -5,6 +5,8 @@ import { findLevelById, fetchAllLevels } from '../services/level';
 import { getQuizes, getNewLevelDetails, getNewLevelQuizes } from './quiz';
 import { getLevelQuizes, getLevels } from './level';
 import { getStudents } from './student';
+import { fetchHistory } from '../services/history';
+import { getHistory } from './history';
 
 const getInitialData = async () => await fetchQuizes();
 
@@ -20,32 +22,35 @@ export const handleInitialData = () => {
   };
 };
 
-export const handleAuthedData = (studentLevelId) => {
+export const handleAuthedData = (studentLevelId, studentId) => {
   return async (dispatch) => {
     dispatch(showLoading());
-    return getAuthedData(studentLevelId)
-      .then(({ students, levels, levelQuizes }) => {
+    return getAuthedData(studentLevelId, studentId)
+      .then(({ students, levels, levelQuizes, history }) => {
         dispatch(getStudents(students));
         dispatch(getLevels(levels));
         dispatch(getNewLevelDetails(levelQuizes.level));
         dispatch(getNewLevelQuizes(levelQuizes.quizzes));
         dispatch(getLevelQuizes(levelQuizes));
+        dispatch(getHistory(history));
         dispatch(hideLoading());
       })
       .catch(() => dispatch(hideLoading()));
   };
 };
 
-const getAuthedData = async (studentLevelId) => {
-  const [students, levels, levelQuizes] = await Promise.all([
+const getAuthedData = async (studentLevelId, studentId) => {
+  const [students, levels, levelQuizes, history] = await Promise.all([
     fetchStudents(),
     fetchAllLevels(),
     findLevelById(studentLevelId),
+    fetchHistory(studentId),
   ]);
 
   return {
     students,
     levels,
     levelQuizes,
+    history,
   };
 };

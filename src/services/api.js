@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const baseURL = 'http://161.35.66.220:12002/api/';
+export const baseURL = 'https://infinite-ocean-61053.herokuapp.com/api/';
 
 const apiCall = axios.create({
   baseURL,

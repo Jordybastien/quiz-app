@@ -2,6 +2,7 @@ import {
   faCog,
   faUsers,
   faLayerGroup,
+  faHistory,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faCalendarAlt,
@@ -51,5 +52,11 @@ export const StudentRoutes = [
     icon: faQuestionCircle,
     label: 'Take Quiz',
     goTo: '/dashboard/take-quiz',
+  },
+  {
+    activeRoute: 'history',
+    icon: faHistory,
+    label: 'My History',
+    goTo: '/dashboard/history',
   },
 ];

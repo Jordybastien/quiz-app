@@ -10,8 +10,8 @@ class App extends Component {
     const user = refreshUser(this.props);
 
     this.props.dispatch(handleInitialData());
-    
-    user && this.props.dispatch(handleAuthedData(user.levelId));
+
+    user && this.props.dispatch(handleAuthedData(user.levelId, user.stdId));
   }
   render() {
     refreshUser(this.props);

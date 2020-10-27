@@ -6,6 +6,7 @@ import StudentsComponent from '../components/dashboard/students';
 import AllQuizesComponent from '../components/dashboard/quizes';
 import Levels from '../components/dashboard/levels';
 import TakeQuizComponent from '../components/dashboard/takeQuiz';
+import HistoryComponent from '../components/dashboard/history';
 import { AllRoles } from '../utils/constants';
 
 const DashboardRouting = () => {
@@ -31,6 +32,11 @@ const DashboardRouting = () => {
       <DashboardRoute
         path="/dashboard/take-quiz"
         component={TakeQuizComponent}
+        allowedRole={AllRoles.students}
+      />
+      <DashboardRoute
+        path="/dashboard/history"
+        component={HistoryComponent}
         allowedRole={AllRoles.students}
       />
     </>
