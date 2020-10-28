@@ -654,7 +654,7 @@ body {
 .custom-btn {
   border-radius: 5px;
   border: 1px solid #5d4eb1 !important;
-  background-color: #5d4eb1!important;
+  background-color: #5d4eb1 !important;
 }
 .form-check {
   position: relative;
@@ -670,5 +670,12 @@ body {
   margin-bottom: 0;
 }
 .ant-pagination-options {
-  display: none!important;
+  display: none !important;
+}
+
+.new-custom-btn {
+  width: 200px !important;
+  height: 35px !important;
+  border-radius: 5px !important;
+  font-size: 1.3em !important;
 }

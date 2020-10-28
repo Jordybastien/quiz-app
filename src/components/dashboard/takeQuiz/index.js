@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { Pagination, message, Popconfirm, Button, Result, Modal } from 'antd';
+import {
+  Pagination,
+  message,
+  Popconfirm,
+  Button,
+  Result,
+  Modal,
+  Tag,
+  Badge,
+} from 'antd';
 import { connect } from 'react-redux';
 import TextBox from '../../textbox';
 import _ from 'lodash';
@@ -19,7 +28,9 @@ class TakeQuiz extends Component {
     },
     loading: false,
     modal2Visible: false,
+    modal1Visible: false,
     finalResponse: false,
+    quizResult: null,
   };
 
   handleChangeAnswer = (e) =>
@@ -71,7 +82,8 @@ class TakeQuiz extends Component {
           this.setState({ loading: false });
           this.setState({
             modal2Visible: true,
-            finalResponse: res
+            quizResult: res.meta,
+            finalResponse: res.passed
               ? {
                   status: 'success',
                   title: 'Succeeded',
@@ -97,10 +109,12 @@ class TakeQuiz extends Component {
       answers,
       loading,
       modal2Visible,
+      modal1Visible,
       finalResponse,
+      quizResult,
     } = this.state;
     const { num, newLevelDetails } = this.props;
-    
+
     return (
       <div className="container pt-5">
         <Modal
@@ -110,11 +124,129 @@ class TakeQuiz extends Component {
           onCancel={() => (window.location.href = '/dashboard')}
         >
           {finalResponse && (
-            <Result
-              status={finalResponse.status}
-              title={finalResponse.title}
-              subTitle={finalResponse.subTitle}
-            />
+            <>
+              <Result
+                status={finalResponse.status}
+                title={finalResponse.title}
+                subTitle={finalResponse.subTitle}
+              />
+              <div className="row justify-content-center align-items-center">
+                <button
+                  className="btn btn-primary btn-block custom-btn new-custom-btn"
+                  type="button"
+                  onClick={() =>
+                    this.setState({ modal2Visible: false, modal1Visible: true })
+                  }
+                >
+                  View Details
+                </button>
+              </div>
+            </>
+          )}
+        </Modal>
+        <Modal
+          centered
+          visible={modal1Visible}
+          footer={null}
+          onCancel={() => (window.location.href = '/dashboard')}
+        >
+          {quizResult && (
+            <div className="container">
+              <div className="row">
+                <div className="h4">Quiz Details</div>
+              </div>
+              <div className="row">
+                <span>Quiz Total Points: </span>
+                <span>{quizResult['Quiz Total Points']}</span>
+              </div>
+              <div className="row">
+                <span>Student Points: </span>
+                <span>{quizResult['Student Points']}</span>
+              </div>
+              <div className="row mb-5">
+                <span>Average: </span>
+                <span>{quizResult['Average']}</span>
+              </div>
+              <div className="row">
+                <span>Number of Questions: </span>
+                <span>{quizResult['Answers'].length}</span>
+              </div>
+              <div className="row">
+                <span>Number of Correct Answers: </span>
+                <span>
+                  {
+                    quizResult['Answers'].filter(
+                      (result) => result.passed === true
+                    ).length
+                  }
+                </span>
+              </div>
+              <div className="row mb-5">
+                <span>Number of False Answers: </span>
+                <span>
+                  {
+                    quizResult['Answers'].filter(
+                      (result) => result.passed === false
+                    ).length
+                  }
+                </span>
+              </div>
+              <div className="row mb-3">
+                <span className="h5">Question Details </span>
+              </div>
+              {quizResult['Answers'].map((result, index) => (
+                <div className="container mb-3" key={index}>
+                  <div className="row">
+                    <span>
+                      Question{' '}
+                      <Badge
+                        count={index + 1}
+                        style={
+                          result.passed
+                            ? { backgroundColor: '#52c51a' }
+                            : { backgroundColor: '#ff4d4e' }
+                        }
+                      />
+                    </span>
+                  </div>
+                  <div className="row">
+                    <span>Question Type: </span>
+                    <span>{result.type}</span>
+                  </div>
+                  <div className="row">
+                    <span>Marks: </span>
+                    <span>{result.marks}</span>
+                  </div>
+                  <div className="row">
+                    <span>Question: </span>
+                    <span>{result.question}</span>
+                  </div>
+                  <div className="row">
+                    <span>Response: </span>
+                    <span>{result.answered}</span>
+                  </div>
+                  {result.type === 'multiChoice' ? (
+                    <div className="row">
+                      <span>Correct Answer: </span>
+
+                      {result.answer
+                        .substring(2, result.answer.length - 2)
+                        .split(',')
+                        .map((answer, index) => (
+                          <Tag color="geekblue" key={index}>
+                            {answer}
+                          </Tag>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="row">
+                      <span>Correct Answer: </span>
+                      <span>{result.answer}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
         </Modal>
         <div className="dashboard-card p-3">

@@ -63,7 +63,7 @@ export const handleSubmitQuiz = (data) => {
         user.levelId = response.meta['New Level'];
         localStorage.setItem(tokenKey, JSON.stringify(user));
       }
-      return response.passed;
+      return response;
     } catch (error) {
       toastr.error('Error', 'Failed to Submit Quiz Answers, Please contact Us');
       return dispatch(
