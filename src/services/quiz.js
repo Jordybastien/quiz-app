@@ -14,3 +14,8 @@ export const submitAnswers = async (info) => {
   const res = await api.post('/quiz/answers', info);
   return res.data;
 };
+
+export const deleteQuiz = async (quizId) => {
+  const res = await api.get(`/quiz/deactivate/${quizId}`);
+  return parseInt(res.data.responseCode);
+};

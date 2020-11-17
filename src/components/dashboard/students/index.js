@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Tooltip, Button, Modal } from 'antd';
+import { Table, Tooltip, Button, Modal, Tag, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import SelectOption from '../../select';
 import { handleNewUser } from '../../../actions/student';
+import { handleStudentStatus } from '../../../actions/student';
 
 const options = [
   { value: 'pdf', label: 'PDF' },
@@ -40,6 +41,8 @@ class StudentsComponent extends Component {
       age: '',
       MSISDN: '',
     },
+    selStudentId: '',
+    selStatus: '',
   };
 
   handleChange = (pagination, filters, sorter) => {
@@ -208,6 +211,16 @@ class StudentsComponent extends Component {
     return { data, response };
   };
 
+  handleStudent = (student, status) => {
+    this.setState({ selStudentId: student.stdId, loading: true });
+    this.props
+      .dispatch(handleStudentStatus(student, status))
+      .then((res) => {
+        this.setState({ loading: false });
+        if (res) this.setState({ students: this.props.students });
+      });
+  };
+
   render() {
     const {
       selectedOption,
@@ -216,6 +229,7 @@ class StudentsComponent extends Component {
       selectedType,
       errors,
       students,
+      selStudentId,
     } = this.state;
 
     const { num, levelQuizes } = this.props;
@@ -262,6 +276,85 @@ class StudentsComponent extends Component {
         dataIndex: 'type',
         key: 'type',
         width: 100,
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (status) => {
+          switch (status) {
+            case 0:
+              return (
+                <Tag color="volcano" key={status}>
+                  Deactivated
+                </Tag>
+              );
+            case 1:
+              return (
+                <Tag color="green" key={status}>
+                  Activated
+                </Tag>
+              );
+
+            default:
+              break;
+          }
+        },
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text, record) => {
+          switch (record.status) {
+            case 0:
+              return (
+                <Popconfirm
+                  placement="top"
+                  title="Are you sure to Activate Student"
+                  onConfirm={() => this.handleStudent(record, 'activate')}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button type="primary">
+                    Activate{' '}
+                    {loading && record.stdId === selStudentId && (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        size="sm"
+                        color="#fff"
+                        className="ml-2"
+                      />
+                    )}
+                  </Button>
+                </Popconfirm>
+              );
+            case 1:
+              return (
+                <Popconfirm
+                  placement="top"
+                  title="Are you sure to Deactivate Student"
+                  onConfirm={() => this.handleStudent(record, 'deactivate')}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button type="ghost">
+                    Deactivate{' '}
+                    {loading && record.stdId === selStudentId && (
+                      <FontAwesomeIcon
+                        icon={faSpinner}
+                        size="sm"
+                        color="#fff"
+                        className="ml-2 to-pink"
+                      />
+                    )}
+                  </Button>
+                </Popconfirm>
+              );
+
+            default:
+              break;
+          }
+        },
       },
     ];
 
@@ -435,6 +528,7 @@ const mapStateToProps = ({ students, levels: levelQuizes }) => ({
     ...obj,
     key: index,
     rowNum: index + 1,
+    recordIndex: index,
   })),
   num: Object.values(students).length,
   levelQuizes: Object.values(levelQuizes).map(({ level }) => ({

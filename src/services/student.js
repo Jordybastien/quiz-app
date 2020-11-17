@@ -9,3 +9,8 @@ export const recordStudent = async (info) => {
   const res = await api.post('/students/create', info);
   return res.data;
 };
+
+export const alterStudent = async (studentId, status) => {
+  const res = await api.get(`/students/${status}/${studentId}`);
+  return parseInt(res.data.responseCode);
+};

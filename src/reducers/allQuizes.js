@@ -1,4 +1,4 @@
-import { FETCH_QUIZES, RECORD_QUIZ } from '../actions/actionTypes';
+import { FETCH_QUIZES, RECORD_QUIZ, DELETE_QUIZ } from '../actions/actionTypes';
 
 export default function allQuizes(state = {}, action) {
   switch (action.type) {

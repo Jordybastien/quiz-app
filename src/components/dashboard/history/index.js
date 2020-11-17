@@ -79,6 +79,13 @@ class HistoryComponent extends Component {
     }
   };
 
+  handleViewMore = (record) => {
+    this.setState({
+      modal1Visible: true,
+      selectedRecord: record.data,
+    });
+  };
+
   render() {
     const {
       selectedOption,
@@ -125,6 +132,17 @@ class HistoryComponent extends Component {
         dataIndex: 'level',
         key: 'level',
       },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text, record) => {
+          return (
+            <Button type="primary" onClick={() => this.handleViewMore(record)}>
+              View more
+            </Button>
+          );
+        },
+      },
     ];
 
     return (
@@ -167,12 +185,14 @@ class HistoryComponent extends Component {
 }
 
 const mapStateToProps = ({ history }) => ({
-  history: Object.values(history).map((obj, index) => ({
-    ...obj,
-    key: index,
-    rowNum: index + 1,
-    dateTaken: obj.dateCreated.split('T')[0],
-  })).reverse(),
+  history: Object.values(history)
+    .map((obj, index) => ({
+      ...obj,
+      key: index,
+      rowNum: index + 1,
+      dateTaken: obj.dateCreated.split('T')[0],
+    }))
+    .reverse(),
   num: Object.values(history).length,
 });
 

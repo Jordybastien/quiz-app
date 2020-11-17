@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Tooltip, Button, Modal, Tag } from 'antd';
+import { Table, Tooltip, Button, Modal, Tag, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -8,7 +8,7 @@ import { exportToCsv, exportPDF } from '../../../utils/fileGenerator';
 import TextBox from '../../textbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { handleNewQuiz } from '../../../actions/quiz';
+import { handleNewQuiz, handleQuizDelete } from '../../../actions/quiz';
 
 const options = [
   { value: 'pdf', label: 'PDF' },
@@ -40,6 +40,7 @@ class AllQuizesComponent extends Component {
     loading: false,
     selectedLevel: null,
     selectedType: null,
+    selQId: '',
   };
 
   handleChange = (pagination, filters, sorter) => {
@@ -210,6 +211,14 @@ class AllQuizesComponent extends Component {
     return { data, response };
   };
 
+  handleQuiz = (quiz) => {
+    this.setState({ loading: true, selQId: quiz.QId });
+    this.props.dispatch(handleQuizDelete(quiz)).then((res) => {
+      this.setState({ loading: false });
+      if (res) return (window.location.href = '/dashboard');
+    });
+  };
+
   render() {
     const {
       selectedOption,
@@ -218,6 +227,7 @@ class AllQuizesComponent extends Component {
       loading,
       selectedLevel,
       selectedType,
+      selQId,
     } = this.state;
 
     const { num, levelQuizes } = this.props;
@@ -276,6 +286,33 @@ class AllQuizesComponent extends Component {
         dataIndex: 'levelId',
         key: 'levelId',
         width: 100,
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text, record) => {
+          return (
+            <Popconfirm
+              placement="top"
+              title="Are you sure to delete quiz"
+              onConfirm={() => this.handleQuiz(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="primary">
+                Delete{' '}
+                {loading && record.QId === selQId && (
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    size="sm"
+                    color="#fff"
+                    className="ml-2"
+                  />
+                )}
+              </Button>
+            </Popconfirm>
+          );
+        },
       },
     ];
 
@@ -449,9 +486,10 @@ const mapStateToProps = ({ allQuizes, levels: levelQuizes }) => ({
     ...obj,
     key: index,
     rowNum: index + 1,
+    recordIndex: index,
   })),
   num: Object.values(allQuizes).length,
-  levelQuizes: Object.values(levelQuizes).map(({  level }) => ({
+  levelQuizes: Object.values(levelQuizes).map(({ level }) => ({
     value: level,
     label: level,
   })),

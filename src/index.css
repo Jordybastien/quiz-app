@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap');
 
 :root {
-  --color-turquoise: #5C4DB1;
-  --color-indian-red: #DC4F89;
+  --color-turquoise: #5c4db1;
+  --color-indian-red: #dc4f89;
   --color-dark-slate-gray: #3e5561;
   --color-light-slate-gray: #909198;
   --color-white: #fafafa;
@@ -38,9 +38,8 @@ body {
   position: relative;
   height: 100vh;
 }
-.menu-container{
+.menu-container {
   display: flex;
-  
 }
 .homepage-wrapper {
   background: url('./assets/bg_lines.png') no-repeat center center fixed;
@@ -397,6 +396,10 @@ body {
 .church-name {
   font-weight: bold;
   color: var(--color-dark-slate-gray);
+}
+
+.to-pink {
+  color: var(--color-turquoise);
 }
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
