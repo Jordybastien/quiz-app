@@ -86,7 +86,6 @@ export const handleQuizDelete = (quiz) => {
       }
       toastr.error('Error', 'Failed to delete quiz');
       return false;
-      return true;
     } catch (error) {
       toastr.error('Error', 'Failed to delete quiz');
       return dispatch(logError('Failed to delete quiz'));

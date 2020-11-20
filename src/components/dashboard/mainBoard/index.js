@@ -55,7 +55,7 @@ const MainBoard = (props) => {
                   </span>
                 </div>
                 <div>
-                  <span className="stats-heading-label">Level</span>
+                  <span className="stats-heading-label">Course</span>
                 </div>
               </div>
             </div>

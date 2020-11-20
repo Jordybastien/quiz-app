@@ -34,10 +34,10 @@ export const AdminRoutes = [
     goTo: '/dashboard/quizes',
   },
   {
-    activeRoute: 'levels',
+    activeRoute: 'courses',
     icon: faLayerGroup,
-    label: 'Levels',
-    goTo: '/dashboard/levels',
+    label: 'Courses',
+    goTo: '/dashboard/courses',
   },
 ];
 export const StudentRoutes = [

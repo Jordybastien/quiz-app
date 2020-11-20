@@ -267,7 +267,7 @@ body {
 .nav-label {
   font-weight: bold;
   font-size: 1.3rem;
-  color: var(--color-dark-slate-gray);
+  color: var(--color-white);
   cursor: pointer;
 }
 .nav-label:hover {
@@ -275,14 +275,19 @@ body {
 }
 
 .custom-nav {
-  margin-bottom: 50px;
+  padding-bottom: 50px;
+  background-color: #5d4eb1;
+  color: var(--color-white);
+  border-bottom: 1px solid #ffffff30;
 }
 
 .another-logo {
   width: 90%;
 }
 .about-us {
-  color: var(--color-dark-slate-gray);
+  color: var(--color-white);
+  background-color: var(--color-turquoise);
+  padding-bottom: 30px;
 }
 .about-us-title {
   font-weight: bold;
@@ -292,10 +297,13 @@ body {
   font-size: 1.3rem;
 }
 .covid-section {
-  background-color: var(--color-turquoise);
-  margin-top: 50px;
+  /* background-color: var(--color-turquoise); */
+  /* margin-top: 50px; */
+  background: url('./assets/bg_lines.png');
+  background-size: cover;
   padding: 80px 0px 80px 0px;
-  color: var(--color-white);
+
+  color: var(--color-dark-slate-gray);
 }
 .covid-img {
   width: 250px;
@@ -312,10 +320,11 @@ body {
 }
 .features-section {
   padding: 80px 0px 80px 0px;
-  color: var(--color-dark-slate-gray);
-  background: url('./assets/bg_lines.png');
-  background-size: cover;
+  color: var(--color-white);
+  /* background: url('./assets/bg_lines.png'); */
+  /* background-size: cover; */
   width: 100%;
+  background-color: var(--color-turquoise);
 }
 .features-title {
   font-weight: bold;

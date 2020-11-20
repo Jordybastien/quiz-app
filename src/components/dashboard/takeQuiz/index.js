@@ -258,12 +258,12 @@ class TakeQuiz extends Component {
                 </div>
                 <div className="d-flex flex-column">
                   <div>
-                    <span className="font-weight-bold">Level Name: </span>
+                    <span className="font-weight-bold">Course Name: </span>
                     <span>{newLevelDetails.levelName}</span>
                   </div>
                   <div>
                     <span className="font-weight-bold">
-                      Level Description:{' '}
+                      Course Description:{' '}
                     </span>
                     <span>{newLevelDetails.levelDescription}</span>
                   </div>

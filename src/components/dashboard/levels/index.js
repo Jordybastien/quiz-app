@@ -55,9 +55,9 @@ class LevelsComponent extends Component {
     this.setState({ selectedOption });
 
     if (selectedOption.value === 'pdf') {
-      const title = 'All Levels';
+      const title = 'All Courses';
       const headers = [
-        ['#', 'Level Name', 'Level Description', 'Level', 'Passing Rate'],
+        ['#', 'Course Name', 'Course Description', 'Course', 'Passing Rate'],
       ];
 
       const data = this.state.levelQuizes.map((elt) => [
@@ -73,9 +73,9 @@ class LevelsComponent extends Component {
       CsvString.push([
         '\r\n',
         '#',
-        'Level Name',
-        'Level Description',
-        'Level',
+        'Course Name',
+        'Course Description',
+        'Course',
         'Passing Rate',
       ]);
 
@@ -164,19 +164,19 @@ class LevelsComponent extends Component {
     data.passingRate = passingRate;
 
     if (!levelName) {
-      errors.levelName = 'Level Name is Required';
+      errors.levelName = 'Course Name is Required';
       response = false;
     }
 
     if (!levelDescription) {
-      errors.levelDescription = 'Level Description is required';
+      errors.levelDescription = 'Course Description is required';
       response = false;
     }
     if (!level) {
-      errors.level = 'Level is required';
+      errors.level = 'Course is required';
       response = false;
     } else if (isNaN(level)) {
-      errors.level = 'Level should be a numeric value';
+      errors.level = 'Course should be a numeric value';
       response = false;
     }
     if (!passingRate) {
@@ -223,7 +223,7 @@ class LevelsComponent extends Component {
         width: 50,
       },
       {
-        title: 'Level Name',
+        title: 'Course Name',
         dataIndex: 'levelName',
         key: 'levelName',
         sorter: (a, b) => a.levelName.length - b.levelName.length,
@@ -231,7 +231,7 @@ class LevelsComponent extends Component {
         ellipsis: true,
       },
       {
-        title: 'Level Description',
+        title: 'Course Description',
         dataIndex: 'levelDescription',
         key: 'levelDescription',
       },
@@ -345,7 +345,7 @@ class LevelsComponent extends Component {
               </Modal>
             )}
             <Modal
-              title="Add Student"
+              title="Add Course"
               centered
               visible={this.state.modal1Visible}
               footer={null}
@@ -354,7 +354,7 @@ class LevelsComponent extends Component {
               <div className="container">
                 <div className="row txt-box-container">
                   <div>
-                    <span className="input-label">Level Name</span>
+                    <span className="input-label">Course Name</span>
                   </div>
                   <div>
                     <TextBox
@@ -366,7 +366,7 @@ class LevelsComponent extends Component {
                 </div>
                 <div className="row txt-box-container">
                   <div>
-                    <span className="input-label">Level Description</span>
+                    <span className="input-label">Course Description</span>
                   </div>
                   <div>
                     <TextBox
@@ -378,7 +378,7 @@ class LevelsComponent extends Component {
                 </div>
                 <div className="row txt-box-container">
                   <div>
-                    <span className="input-label">Level(Numeric value)</span>
+                    <span className="input-label">Course(Numeric value)</span>
                   </div>
                   <div>
                     <TextBox
@@ -444,7 +444,7 @@ class LevelsComponent extends Component {
         </div>
         <div className="dashboard-card">
           <div className="row mb-3">
-            <span className="modal-title">Levels </span>
+            <span className="modal-title">Courses </span>
             <span>({num})</span>
           </div>
           <div className="row">

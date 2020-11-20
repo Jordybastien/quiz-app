@@ -56,7 +56,7 @@ class AllQuizesComponent extends Component {
     if (selectedOption.value === 'pdf') {
       const title = 'All Quizes';
       const headers = [
-        ['#', 'Type', 'Question', 'Answer', 'Response', 'Marks', 'Level'],
+        ['#', 'Type', 'Question', 'Answer', 'Response', 'Marks', 'Course'],
       ];
 
       const data = this.state.allQuizes.map((elt) => [
@@ -79,7 +79,7 @@ class AllQuizesComponent extends Component {
         'Answer',
         'Response',
         'Marks',
-        'Level',
+        'Course',
       ]);
 
       this.state.allQuizes.map((elt) =>
@@ -282,7 +282,7 @@ class AllQuizesComponent extends Component {
         width: 100,
       },
       {
-        title: 'Level',
+        title: 'Course',
         dataIndex: 'levelId',
         key: 'levelId',
         width: 100,
@@ -403,7 +403,7 @@ class AllQuizesComponent extends Component {
                 </div>
                 <div className="row txt-box-container mb-5">
                   <div>
-                    <span className="input-label">Level</span>
+                    <span className="input-label">Course</span>
                   </div>
                   <div>
                     <Select

@@ -25,7 +25,7 @@ const DashboardRouting = () => {
         allowedRole={AllRoles.admin}
       />
       <DashboardRoute
-        path="/dashboard/levels"
+        path="/dashboard/courses"
         component={Levels}
         allowedRole={AllRoles.admin}
       />

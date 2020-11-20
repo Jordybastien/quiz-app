@@ -431,7 +431,7 @@ class StudentsComponent extends Component {
                 </div>
                 <div className="row txt-box-container">
                   <div>
-                    <span className="input-label">Level</span>
+                    <span className="input-label">Course</span>
                   </div>
                   <div>
                     <Select

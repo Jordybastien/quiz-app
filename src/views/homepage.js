@@ -14,11 +14,12 @@ class Homepage extends Component {
             <div className="container">
               <div className="row d-flex justify-content-between pt-4">
                 <div>
-                  <img
+                  {/* <img
                     src={require('../assets/main-logo.png')}
                     alt="ZTCC"
                     className="logo"
-                  />
+                  /> */}
+                  <span className="about-us-title">Quiz App</span>
                 </div>
                 <div className="menu-container">
                   {!isAuth ? (
@@ -39,7 +40,7 @@ class Homepage extends Component {
               <div className="row">
                 <div className="col-md-8 pt-5">
                   <div className="mb-3">
-                    <span className="about-us-title">Quiz App</span>
+                    {/* <span className="about-us-title">Quiz App</span> */}
                   </div>
                   <div>
                     <span className="about-us-description">

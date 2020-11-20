@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Tooltip, Button, Modal, Tag } from 'antd';
+import { Table, Tooltip, Button, Modal, Tag, Badge } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -9,6 +9,7 @@ import TextBox from '../../textbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { handleNewLevel } from '../../../actions/level';
+import { handleUserHistory } from '../../../actions/history';
 
 const options = [
   { value: 'pdf', label: 'PDF' },
@@ -29,6 +30,8 @@ class HistoryComponent extends Component {
     modal1Visible: false,
     loading: false,
     selectedRecord: null,
+    selHistoryId: '',
+    userHistory: this.props.userHistory,
   };
 
   handleChange = (pagination, filters, sorter) => {
@@ -81,8 +84,16 @@ class HistoryComponent extends Component {
 
   handleViewMore = (record) => {
     this.setState({
-      modal1Visible: true,
       selectedRecord: record.data,
+      loading: true,
+      selHistoryId: record.historyId,
+    });
+    this.props.dispatch(handleUserHistory(record.historyId)).then((res) => {
+      this.setState({
+        loading: false,
+        modal1Visible: res,
+        userHistory: this.props.userHistory,
+      });
     });
   };
 
@@ -95,6 +106,9 @@ class HistoryComponent extends Component {
       selectedLevel,
       selectedType,
       selectedRecord,
+      selHistoryId,
+      modal1Visible,
+      userHistory,
     } = this.state;
 
     const { num } = this.props;
@@ -128,7 +142,7 @@ class HistoryComponent extends Component {
         key: 'points',
       },
       {
-        title: 'Level',
+        title: 'Course',
         dataIndex: 'level',
         key: 'level',
       },
@@ -138,7 +152,15 @@ class HistoryComponent extends Component {
         render: (text, record) => {
           return (
             <Button type="primary" onClick={() => this.handleViewMore(record)}>
-              View more
+              View more{' '}
+              {loading && record.historyId === selHistoryId && (
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  size="sm"
+                  color="#fff"
+                  className="ml-2"
+                />
+              )}
             </Button>
           );
         },
@@ -158,6 +180,95 @@ class HistoryComponent extends Component {
               className="customized-select mb-3"
               isSearchable={false}
             />
+            {
+              <Modal
+                visible={modal1Visible}
+                footer={null}
+                onCancel={() => this.setState({ modal1Visible: false })}
+              >
+                <div className="container">
+                  <div className="row">
+                    <span>Number of Questions: </span>
+                    <span>{userHistory && userHistory.length}</span>
+                  </div>
+                  <div className="row">
+                    <span>Number of Correct Answers: </span>
+                    <span>
+                      {userHistory &&
+                        userHistory.length !== 0 &&
+                        userHistory.filter((result) => result.passed === true)
+                          .length}
+                    </span>
+                  </div>
+                  <div className="row mb-5">
+                    <span>Number of False Answers: </span>
+                    <span>
+                      {userHistory &&
+                        userHistory.length !== 0 &&
+                        userHistory.filter((result) => result.passed === false)
+                          .length}
+                    </span>
+                  </div>
+                  <div className="row mb-3">
+                    <span className="h5">Question Details </span>
+                  </div>
+                  {userHistory &&
+                    userHistory.length !== 0 &&
+                    userHistory.map((result, index) => (
+                      <div className="container mb-3" key={index}>
+                        <div className="row">
+                          <span>
+                            Question{' '}
+                            <Badge
+                              count={index + 1}
+                              style={
+                                result.passed
+                                  ? { backgroundColor: '#52c51a' }
+                                  : { backgroundColor: '#ff4d4e' }
+                              }
+                            />
+                          </span>
+                        </div>
+                        <div className="row">
+                          <span>Question Type: </span>
+                          <span>{result.type}</span>
+                        </div>
+                        <div className="row">
+                          <span>Marks: </span>
+                          <span>{result.marks}</span>
+                        </div>
+                        <div className="row">
+                          <span>Question: </span>
+                          <span>{result.question}</span>
+                        </div>
+                        <div className="row">
+                          <span>Response: </span>
+                          <span>{result.answered}</span>
+                        </div>
+                        {result.type === 'multiChoice' ? (
+                          <div className="row">
+                            <span>Correct Answer: </span>
+
+                            {result.answer
+                              .substring(2, result.answer.length - 2)
+                              .split(',')
+                              .map((answer, index) => (
+                                <Tag color="geekblue" key={index}>
+                                  {answer}
+                                </Tag>
+                              ))}
+                          </div>
+                        ) : (
+                          <div className="row">
+                            <span>Correct Answer: </span>
+                            <span>{result.answer}</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </Modal>
+            }
           </div>
         </div>
         <div className="dashboard-card">
@@ -184,7 +295,7 @@ class HistoryComponent extends Component {
   }
 }
 
-const mapStateToProps = ({ history }) => ({
+const mapStateToProps = ({ history, userHistory }) => ({
   history: Object.values(history)
     .map((obj, index) => ({
       ...obj,
@@ -194,6 +305,7 @@ const mapStateToProps = ({ history }) => ({
     }))
     .reverse(),
   num: Object.values(history).length,
+  userHistory: userHistory && Object.values(userHistory),
 });
 
 export default connect(mapStateToProps)(HistoryComponent);
