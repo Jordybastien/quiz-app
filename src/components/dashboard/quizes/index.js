@@ -489,10 +489,11 @@ const mapStateToProps = ({ allQuizes, levels: levelQuizes }) => ({
     recordIndex: index,
   })),
   num: Object.values(allQuizes).length,
-  levelQuizes: Object.values(levelQuizes).map(({ level }) => ({
-    value: level,
-    label: level,
+  levelQuizes: Object.values(levelQuizes).map(({ levelId, levelName }) => ({
+    value: levelId,
+    label: levelName,
   })),
+  newLevelQuizes: Object.values(levelQuizes),
 });
 
 export default connect(mapStateToProps)(AllQuizesComponent);

@@ -1,7 +1,8 @@
 import api from './api';
 
 export const findLevelById = async (id) => {
-  const res = await api.get(`/level/${id}`);
+  // TODO: Remove this hardCoded
+  const res = await api.get(`/level/81`);
   return res.data.meta;
 };
 
