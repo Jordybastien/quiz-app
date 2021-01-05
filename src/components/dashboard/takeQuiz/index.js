@@ -15,6 +15,8 @@ import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { handleSubmitQuiz } from '../../../actions/quiz';
+import Select from 'react-select';
+import { handleFetchingQuizes } from '../../../actions/courses';
 
 class TakeQuiz extends Component {
   state = {
@@ -31,6 +33,8 @@ class TakeQuiz extends Component {
     modal1Visible: false,
     finalResponse: false,
     quizResult: null,
+    showQuiz: false,
+    selectedCourse: null,
   };
 
   handleChangeAnswer = (e) =>
@@ -99,6 +103,17 @@ class TakeQuiz extends Component {
     } else message.warning('Answer all question first please');
   };
 
+  handleCourse = (selectedCourse) => {
+    this.setState({ selectedCourse, loading: true });
+    // selectedCours.value
+    this.props
+      .dispatch(handleFetchingQuizes(selectedCourse.value))
+      .then((res) => {
+        if (res)
+          this.setState({ showQuiz: true, levelQuiz: this.props.levelQuiz });
+        this.setState({ loading: false });
+      });
+  };
   render() {
     const {
       levelQuiz,
@@ -112,8 +127,10 @@ class TakeQuiz extends Component {
       modal1Visible,
       finalResponse,
       quizResult,
+      showQuiz,
+      selectedCourse,
     } = this.state;
-    const { num, newLevelDetails } = this.props;
+    const { num, newLevelDetails, courses } = this.props;
 
     return (
       <div className="container pt-5">
@@ -250,7 +267,32 @@ class TakeQuiz extends Component {
           )}
         </Modal>
         <div className="dashboard-card p-3">
-          {levelQuiz.length !== 0 && newLevelDetails ? (
+          {!showQuiz ? (
+            <div className="d-flex justify-content-center align-items-center flex-column py-5">
+              <div className="mb-5">
+                <span className="sel-course-label">Select Course</span>
+              </div>
+              <div className="w-50">
+                <Select
+                  value={selectedCourse}
+                  onChange={this.handleCourse}
+                  options={courses}
+                  className="another-select"
+                  isSearchable={false}
+                />
+              </div>
+              <div className="w-100 d-flex justify-content-center align-items-center mt-5">
+                {loading && (
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    size="lg"
+                    color="#5d4eb1"
+                    className="ml-2"
+                  />
+                )}
+              </div>
+            </div>
+          ) : levelQuiz.length !== 0 && newLevelDetails ? (
             <>
               <div className="row mb-3 px-3 d-flex justify-content-between border-bottom pb-3">
                 <div>
@@ -405,12 +447,21 @@ class TakeQuiz extends Component {
   }
 }
 
-const mapStateToProps = ({ authedUser, newLevelDetails, newLevelQuizes }) => {
+const mapStateToProps = ({
+  authedUser,
+  newLevelDetails,
+  newLevelQuizes,
+  courses,
+}) => {
   return {
     levelQuiz: newLevelQuizes.length !== 0 && newLevelQuizes,
     num: newLevelQuizes.length,
     stdId: authedUser.stdId,
     newLevelDetails,
+    courses: Object.values(courses).map(({ levelId, levelName }) => ({
+      value: levelId,
+      label: levelName,
+    })),
   };
 };
 
