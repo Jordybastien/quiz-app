@@ -143,8 +143,8 @@ class HistoryComponent extends Component {
       },
       {
         title: 'Course',
-        dataIndex: 'level',
-        key: 'level',
+        dataIndex: 'courseName',
+        key: 'courseName',
       },
       {
         title: 'Action',

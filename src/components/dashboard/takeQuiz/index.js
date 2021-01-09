@@ -72,7 +72,10 @@ class TakeQuiz extends Component {
 
   handleFinalSubmit = () => {
     const { num, stdId } = this.props;
-    const { answers } = this.state;
+    const {
+      answers,
+      selectedCourse: { value: levelId },
+    } = this.state;
     if (num === answers.length) {
       this.setState({ loading: true });
       this.props
@@ -80,6 +83,7 @@ class TakeQuiz extends Component {
           handleSubmitQuiz({
             stdId,
             answers,
+            levelId,
           })
         )
         .then((res) => {
