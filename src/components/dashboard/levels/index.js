@@ -9,6 +9,7 @@ import TextBox from '../../textbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { handleNewLevel } from '../../../actions/level';
+import { handleFetchingCourseHistory } from '../../../actions/courseHistory';
 
 const options = [
   { value: 'pdf', label: 'PDF' },
@@ -28,6 +29,7 @@ class LevelsComponent extends Component {
     selectedOption: null,
     modal1Visible: false,
     modal2Visible: false,
+    modal3Visible: false,
     levelName: '',
     levelDescription: '',
     level: '',
@@ -42,6 +44,9 @@ class LevelsComponent extends Component {
     selectedLevel: null,
     selectedType: null,
     selectedRecord: null,
+    selectedHistory: null,
+    selHistory: null,
+    courseHistory: this.props.courseHistory,
   };
 
   handleChange = (pagination, filters, sorter) => {
@@ -86,6 +91,65 @@ class LevelsComponent extends Component {
           elt.levelDescription,
           elt.level,
           elt.passingRate,
+        ])
+      );
+      exportToCsv(CsvString);
+    }
+  };
+
+  handlModalSelect = (selHistory) => {
+    this.setState({ selHistory });
+
+    if (selHistory.value === 'pdf') {
+      const title = 'Course History';
+      const headers = [
+        [
+          '#',
+          'Student First Name',
+          'Student Last Name',
+          'Course Name',
+          'Points',
+          'Average',
+          'Taken On (yyyy/mm/dd)',
+          'Status',
+        ],
+      ];
+
+      const data = this.state.courseHistory.map((elt) => [
+        elt.rowNum,
+        elt.stdFname,
+        elt.stdLname,
+        elt.courseName,
+        elt.points,
+        elt.average,
+        elt.dateTaken,
+        elt.points < elt.average ? 'Failed' : 'Passed',
+      ]);
+      exportPDF(title, headers, data);
+    } else {
+      const CsvString = [];
+      CsvString.push([
+        '\r\n',
+        '#',
+        'Student First Name',
+        'Student Last Name',
+        'Course Name',
+        'Points',
+        'Average',
+        'Taken On (yyyy/mm/dd)',
+        'Status',
+      ]);
+
+      this.state.courseHistory.map((elt) =>
+        CsvString.push('\r\n', [
+          elt.rowNum,
+          elt.stdFname,
+          elt.stdLname,
+          elt.courseName,
+          elt.points,
+          elt.average,
+          elt.dateTaken,
+          elt.points < elt.average ? 'Failed' : 'Passed',
         ])
       );
       exportToCsv(CsvString);
@@ -195,6 +259,24 @@ class LevelsComponent extends Component {
     this.setState({ selectedRecord: record, modal2Visible: true });
   };
 
+  handleViewHistory = (record) => {
+    this.setState({
+      selectedHistory: record,
+      loading: true,
+    });
+    this.props
+      .dispatch(handleFetchingCourseHistory(record.levelId))
+      .then((res) => {
+        if (res.type !== 'LOG_ERROR') {
+          this.setState({
+            modal3Visible: true,
+            loading: false,
+            courseHistory: this.props.courseHistory,
+          });
+        }
+      });
+  };
+
   render() {
     const {
       selectedOption,
@@ -204,10 +286,13 @@ class LevelsComponent extends Component {
       selectedLevel,
       selectedType,
       selectedRecord,
+      selectedHistory,
+      modal3Visible,
+      courseHistory,
+      selHistory,
     } = this.state;
 
     const { num } = this.props;
-    
 
     let { sortedInfo } = this.state;
     sortedInfo = sortedInfo || {};
@@ -249,15 +334,96 @@ class LevelsComponent extends Component {
       //     return quizes ? quizes.length : 0;
       //   },
       // },
-      // {
-      //   title: 'Action',
-      //   key: 'action',
-      //   render: (text, record) => (
-      //     <Button type="primary" onClick={() => this.handleViewMore(record)}>
-      //       View Quizes
-      //     </Button>
-      //   ),
-      // },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text, record) => (
+          <Button type="primary" onClick={() => this.handleViewHistory(record)}>
+            View History
+            {loading && record.rowNum === selectedHistory.rowNum && (
+              <FontAwesomeIcon
+                icon={faSpinner}
+                size="sm"
+                color="#fff"
+                className="ml-2"
+              />
+            )}
+          </Button>
+        ),
+      },
+    ];
+
+    const historyColumns = [
+      {
+        title: '#',
+        dataIndex: 'rowNum',
+        key: 'rowNum',
+        sorter: (a, b) => a.rowNum - b.rowNum,
+        sortOrder: sortedInfo.columnKey === 'rowNum' && sortedInfo.order,
+        ellipsis: true,
+        width: 50,
+      },
+      {
+        title: 'Student First Name',
+        dataIndex: 'stdFname',
+        key: 'stdFname',
+        sorter: (a, b) => a.stdFname.length - b.stdFname.length,
+        sortOrder: sortedInfo.columnKey === 'stdFname' && sortedInfo.order,
+        ellipsis: true,
+      },
+      {
+        title: 'Student Last Name',
+        dataIndex: 'stdLname',
+        key: 'stdLname',
+        sorter: (a, b) => a.stdLname.length - b.stdLname.length,
+        sortOrder: sortedInfo.columnKey === 'stdLname' && sortedInfo.order,
+        ellipsis: true,
+      },
+      {
+        title: 'Course Name',
+        dataIndex: 'courseName',
+        key: 'courseName',
+        sorter: (a, b) => a.courseName.length - b.courseName.length,
+        sortOrder: sortedInfo.columnKey === 'courseName' && sortedInfo.order,
+        ellipsis: true,
+      },
+      {
+        title: 'Points',
+        dataIndex: 'points',
+        key: 'points',
+        sorter: (a, b) => a.points.length - b.points.length,
+        sortOrder: sortedInfo.columnKey === 'points' && sortedInfo.order,
+        ellipsis: true,
+      },
+      {
+        title: 'Average',
+        dataIndex: 'average',
+        key: 'average',
+        sorter: (a, b) => a.average.length - b.average.length,
+        sortOrder: sortedInfo.columnKey === 'average' && sortedInfo.order,
+        ellipsis: true,
+      },
+      {
+        title: 'Taken On (yyyy/mm/dd)',
+        dataIndex: 'dateTaken',
+        key: 'dateTaken',
+        sorter: (a, b) => a.dateTaken.length - b.dateTaken.length,
+        sortOrder: sortedInfo.columnKey === 'dateTaken' && sortedInfo.order,
+        ellipsis: true,
+      },
+      {
+        title: 'Status',
+        key: 'status',
+        render: (text, record) => {
+          let color = 'green';
+          let label = 'Passed';
+          if (record.points < record.average) {
+            color = 'volcano';
+            label = 'Failed';
+          }
+          return <Tag color={color}>{label.toUpperCase()}</Tag>;
+        },
+      },
     ];
 
     return (
@@ -422,6 +588,42 @@ class LevelsComponent extends Component {
                 </div>
               </div>
             </Modal>
+            <Modal
+              title="Course History"
+              // centered
+              width={window.screen.width - 200}
+              visible={this.state.modal3Visible}
+              footer={null}
+              onCancel={() => this.setState({ modal3Visible: false })}
+            >
+              <div className="container">
+                <div className="row mb-3 d-flex flex-row-reverse">
+                  <div>
+                    <Select
+                      value={selHistory}
+                      onChange={this.handlModalSelect}
+                      options={options}
+                      placeholder="Export"
+                      className="customized-select mb-3"
+                      isSearchable={false}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <Table
+                    columns={historyColumns}
+                    dataSource={courseHistory}
+                    onChange={this.handleChange}
+                    pagination={{
+                      defaultPageSize: 10,
+                      showSizeChanger: true,
+                      pageSizeOptions: ['5', '10', '20', '50', '100'],
+                      position: ['bottomCenter'],
+                    }}
+                  />
+                </div>
+              </div>
+            </Modal>
           </div>
           <div className="col-md-4">
             <input
@@ -466,13 +668,19 @@ class LevelsComponent extends Component {
   }
 }
 
-const mapStateToProps = ({ levels: levelQuizes }) => ({
+const mapStateToProps = ({ levels: levelQuizes, courseHistory }) => ({
   levelQuizes: Object.values(levelQuizes).map((obj, index) => ({
     ...obj,
     key: index,
     rowNum: index + 1,
   })),
   num: Object.values(levelQuizes).length,
+  courseHistory: Object.values(courseHistory).map((obj, index) => ({
+    ...obj,
+    key: index,
+    rowNum: index + 1,
+    dateTaken: obj.dateCreated.split('T')[0],
+  })),
 });
 
 export default connect(mapStateToProps)(LevelsComponent);

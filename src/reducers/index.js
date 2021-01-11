@@ -14,6 +14,7 @@ import newLevelQuizes from './newLevelQuizes';
 import history from './history';
 import userHistory from './userHistory';
 import courses from './courses';
+import courseHistory from './courseHistory';
 
 export default combineReducers({
   form: formReducer,
@@ -31,4 +32,5 @@ export default combineReducers({
   history,
   userHistory,
   courses,
+  courseHistory,
 });

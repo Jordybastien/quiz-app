@@ -14,3 +14,8 @@ export const alterStudent = async (studentId, status) => {
   const res = await api.get(`/students/${status}/${studentId}`);
   return parseInt(res.data.responseCode);
 };
+
+export const fetchCourseHistory = async (courseId) => {
+  const res = await api.get(`/history/course/${courseId}`);
+  return res.data.meta.details;
+};
