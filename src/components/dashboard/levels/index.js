@@ -47,6 +47,7 @@ class LevelsComponent extends Component {
     selectedHistory: null,
     selHistory: null,
     courseHistory: this.props.courseHistory,
+    newSelectedLevel: null,
   };
 
   handleChange = (pagination, filters, sorter) => {
@@ -218,13 +219,14 @@ class LevelsComponent extends Component {
       level,
       passingRate,
       errors,
+      newSelectedLevel,
     } = this.state;
     let response = true;
     let data = {};
 
     data.levelName = levelName;
     data.levelDescription = levelDescription;
-    data.level = level;
+    data.level = newSelectedLevel?.value;
     data.passingRate = passingRate;
 
     if (!levelName) {
@@ -236,13 +238,11 @@ class LevelsComponent extends Component {
       errors.levelDescription = 'Course Description is required';
       response = false;
     }
-    if (!level) {
-      errors.level = 'Course is required';
+    if (!newSelectedLevel) {
+      errors.level = 'Grade is required';
       response = false;
-    } else if (isNaN(level)) {
-      errors.level = 'Course should be a numeric value';
-      response = false;
-    }
+    } 
+
     if (!passingRate) {
       errors.passingRate = 'Passing Rate is required';
       response = false;
@@ -277,6 +277,8 @@ class LevelsComponent extends Component {
       });
   };
 
+  newHandleLevel = (newSelectedLevel) => this.setState({ newSelectedLevel });
+
   render() {
     const {
       selectedOption,
@@ -290,6 +292,7 @@ class LevelsComponent extends Component {
       modal3Visible,
       courseHistory,
       selHistory,
+      newSelectedLevel,
     } = this.state;
 
     const { num } = this.props;
@@ -340,7 +343,7 @@ class LevelsComponent extends Component {
         render: (text, record) => (
           <Button type="primary" onClick={() => this.handleViewHistory(record)}>
             View History
-            {loading && record.rowNum === selectedHistory.rowNum && (
+            {loading && record?.rowNum === selectedHistory?.rowNum && (
               <FontAwesomeIcon
                 icon={faSpinner}
                 size="sm"
@@ -417,7 +420,7 @@ class LevelsComponent extends Component {
         render: (text, record) => {
           let color = 'green';
           let label = 'Passed';
-          if (record.points < record.average) {
+          if (selectedHistory.passingRate > record.average) {
             color = 'volcano';
             label = 'Failed';
           }
@@ -426,12 +429,19 @@ class LevelsComponent extends Component {
       },
     ];
 
+    const newGrades = [
+      { value: 1, label: 1 },
+      { value: 2, label: 2 },
+      { value: 3, label: 3 },
+      { value: 4, label: 4 },
+    ];
+
     return (
       <div className="container">
         <div className="row mb-5">{/* Content Here */}</div>
         <div className="row mb-3">
           <div className="col-md-4">
-            <Tooltip placement="right" title={<span>Add Level</span>}>
+            <Tooltip placement="right" title={<span>Add Course</span>}>
               <Button
                 icon={<PlusOutlined className="add-dashboard-btn-icon" />}
                 type="primary"
@@ -544,13 +554,15 @@ class LevelsComponent extends Component {
                 </div>
                 <div className="row txt-box-container">
                   <div>
-                    <span className="input-label">Course(Numeric value)</span>
+                    <span className="input-label">Grade</span>
                   </div>
                   <div>
-                    <TextBox
-                      name="level"
-                      error={errors.level}
-                      onChange={(e) => this.handleLevel(e)}
+                    <Select
+                      value={newSelectedLevel}
+                      onChange={this.newHandleLevel}
+                      options={newGrades}
+                      className="another-select"
+                      isSearchable={false}
                     />
                   </div>
                 </div>

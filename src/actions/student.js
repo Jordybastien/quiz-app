@@ -2,11 +2,15 @@ import {
   FETCH_STUDENTS,
   RECORD_STUDENT,
   ALTER_STUDENT_STATUS,
+  UPDATE_STUDENT,
 } from './actionTypes';
 import { logError } from './error';
-import { recordStudent } from '../services/student';
+import {
+  recordStudent,
+  alterStudent,
+  updateStudent,
+} from '../services/student';
 import { toastr } from 'react-redux-toastr';
-import { alterStudent } from '../services/student';
 
 export const getStudents = (students) => {
   return {
@@ -22,6 +26,14 @@ export const newStudent = (student) => {
   };
 };
 
+export const newUpdateStudent = (student, recordIndex) => {
+  return {
+    type: UPDATE_STUDENT,
+    student,
+    recordIndex,
+  };
+};
+
 export const handleNewUser = (data) => {
   return async (dispatch) => {
     try {
@@ -30,6 +42,7 @@ export const handleNewUser = (data) => {
         return dispatch(logError(user.responseMessage));
       } else {
         toastr.success('Recorded', 'User Recorded Successfully');
+        data.status = 1;
         return dispatch(newStudent(data));
       }
     } catch (error) {
@@ -63,5 +76,23 @@ const alterStudentStatus = (recordIndex, newStatusCode) => {
     type: ALTER_STUDENT_STATUS,
     recordIndex,
     newStatusCode,
+  };
+};
+
+export const handleUpdateUser = (data, recordIndex) => {
+  return async (dispatch) => {
+    try {
+      const user = await updateStudent(data);
+      if (user.responseCode === '101') {
+        return dispatch(logError(user.responseMessage));
+      } else {
+        toastr.success('Updated', 'User Updated Successfully');
+        data.status = 1;
+        return dispatch(newUpdateStudent(data, recordIndex));
+      }
+    } catch (error) {
+      toastr.error('Error', 'Failed to Update User, Please contact Us');
+      return dispatch(logError('Failed to Update User, Please contact Us'));
+    }
   };
 };

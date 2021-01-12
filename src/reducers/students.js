@@ -2,6 +2,7 @@ import {
   FETCH_STUDENTS,
   RECORD_STUDENT,
   ALTER_STUDENT_STATUS,
+  UPDATE_STUDENT,
 } from '../actions/actionTypes';
 
 export default function students(state = {}, action) {
@@ -19,6 +20,13 @@ export default function students(state = {}, action) {
         [action.recordIndex]: {
           ...state[action.recordIndex],
           status: action.newStatusCode,
+        },
+      };
+    case UPDATE_STUDENT:
+      return {
+        ...state,
+        [action.recordIndex]: {
+          ...action.student,
         },
       };
     default:

@@ -19,3 +19,8 @@ export const fetchCourseHistory = async (courseId) => {
   const res = await api.get(`/history/course/${courseId}`);
   return res.data.meta.details;
 };
+
+export const updateStudent = async (info) => {
+  const res = await api.post('/students/update', info);
+  return res.data;
+};

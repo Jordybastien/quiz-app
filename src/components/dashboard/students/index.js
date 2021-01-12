@@ -9,8 +9,11 @@ import TextBox from '../../textbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import SelectOption from '../../select';
-import { handleNewUser } from '../../../actions/student';
-import { handleStudentStatus } from '../../../actions/student';
+import {
+  handleNewUser,
+  handleUpdateUser,
+  handleStudentStatus,
+} from '../../../actions/student';
 
 const options = [
   { value: 'pdf', label: 'PDF' },
@@ -43,6 +46,9 @@ class StudentsComponent extends Component {
     },
     selStudentId: '',
     selStatus: '',
+    isUpdate: false,
+    editRecord: null,
+    recordIndex: 0,
   };
 
   handleChange = (pagination, filters, sorter) => {
@@ -143,15 +149,23 @@ class StudentsComponent extends Component {
     if (response) {
       data.MSISDN = '+25' + data.MSISDN;
       this.setState({ loading: true });
-      this.props.dispatch(handleNewUser(data)).then((res) => {
-        this.setState({ loading: false });
-        if (res) {
-          this.setState({
-            modal1Visible: false,
-            students: this.props.students,
-          });
-        }
-      });
+      this.props
+        .dispatch(
+          this.state.isUpdate
+            ? handleUpdateUser(data, this.state.recordIndex)
+            : handleNewUser(data)
+        )
+        .then((res) => {
+          this.setState({ loading: false });
+          if (res) {
+            this.setState({
+              modal1Visible: false,
+              students: this.props.students,
+              isUpdate: false,
+              editRecord: null,
+            });
+          }
+        });
     }
   };
 
@@ -164,6 +178,8 @@ class StudentsComponent extends Component {
       selectedLevel,
       selectedType,
       errors,
+      isUpdate,
+      editRecord,
     } = this.state;
     let response = true;
     let data = {};
@@ -174,6 +190,8 @@ class StudentsComponent extends Component {
     data.age = age;
     data.levelId = selectedLevel && selectedLevel.value;
     data.type = selectedType && selectedType.value;
+
+    if (isUpdate) data.stdId = editRecord.stdId;
 
     if (!MSISDN) {
       errors.MSISDN = 'Phone Number is Required';
@@ -213,12 +231,25 @@ class StudentsComponent extends Component {
 
   handleStudent = (student, status) => {
     this.setState({ selStudentId: student.stdId, loading: true });
-    this.props
-      .dispatch(handleStudentStatus(student, status))
-      .then((res) => {
-        this.setState({ loading: false });
-        if (res) this.setState({ students: this.props.students });
-      });
+    this.props.dispatch(handleStudentStatus(student, status)).then((res) => {
+      this.setState({ loading: false });
+      if (res) this.setState({ students: this.props.students });
+    });
+  };
+
+  handleOpenUpdate = (editRecord) => {
+    this.setState({
+      editRecord,
+      isUpdate: true,
+      modal1Visible: true,
+      selectedLevel: { label: editRecord.levelId, value: editRecord.levelId },
+      selectedType: { label: editRecord.type, value: editRecord.type },
+      MSISDN: editRecord.MSISDN.substr(3, 10),
+      age: editRecord.age,
+      stdFname: editRecord.stdFname,
+      stdLname: editRecord.stdLname,
+      recordIndex: editRecord.recordIndex,
+    });
   };
 
   render() {
@@ -230,9 +261,21 @@ class StudentsComponent extends Component {
       errors,
       students,
       selStudentId,
+      isUpdate,
+      MSISDN,
+      stdFname,
+      stdLname,
+      age,
     } = this.state;
 
     const { num, levelQuizes } = this.props;
+
+    const newGrades = [
+      { value: 1, label: 1 },
+      { value: 2, label: 2 },
+      { value: 3, label: 3 },
+      { value: 4, label: 4 },
+    ];
 
     let { sortedInfo } = this.state;
     sortedInfo = sortedInfo || {};
@@ -308,47 +351,63 @@ class StudentsComponent extends Component {
           switch (record.status) {
             case 0:
               return (
-                <Popconfirm
-                  placement="top"
-                  title="Are you sure to Activate Student"
-                  onConfirm={() => this.handleStudent(record, 'activate')}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button type="primary">
-                    Activate{' '}
-                    {loading && record.stdId === selStudentId && (
-                      <FontAwesomeIcon
-                        icon={faSpinner}
-                        size="sm"
-                        color="#fff"
-                        className="ml-2"
-                      />
-                    )}
+                <>
+                  <Button
+                    type="primary"
+                    onClick={() => this.handleOpenUpdate(record)}
+                  >
+                    Edit
                   </Button>
-                </Popconfirm>
+                  <Popconfirm
+                    placement="top"
+                    title="Are you sure to Activate Student"
+                    onConfirm={() => this.handleStudent(record, 'activate')}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button type="primary">
+                      Activate{' '}
+                      {loading && record.stdId === selStudentId && (
+                        <FontAwesomeIcon
+                          icon={faSpinner}
+                          size="sm"
+                          color="#fff"
+                          className="ml-2"
+                        />
+                      )}
+                    </Button>
+                  </Popconfirm>
+                </>
               );
             case 1:
               return (
-                <Popconfirm
-                  placement="top"
-                  title="Are you sure to Deactivate Student"
-                  onConfirm={() => this.handleStudent(record, 'deactivate')}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button type="ghost">
-                    Deactivate{' '}
-                    {loading && record.stdId === selStudentId && (
-                      <FontAwesomeIcon
-                        icon={faSpinner}
-                        size="sm"
-                        color="#fff"
-                        className="ml-2 to-pink"
-                      />
-                    )}
+                <>
+                  <Button
+                    type="primary"
+                    onClick={() => this.handleOpenUpdate(record)}
+                  >
+                    Edit
                   </Button>
-                </Popconfirm>
+                  <Popconfirm
+                    placement="top"
+                    title="Are you sure to Deactivate Student"
+                    onConfirm={() => this.handleStudent(record, 'deactivate')}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button type="ghost">
+                      Deactivate{' '}
+                      {loading && record.stdId === selStudentId && (
+                        <FontAwesomeIcon
+                          icon={faSpinner}
+                          size="sm"
+                          color="#fff"
+                          className="ml-2 to-pink"
+                        />
+                      )}
+                    </Button>
+                  </Popconfirm>
+                </>
               );
 
             default:
@@ -363,7 +422,12 @@ class StudentsComponent extends Component {
         <div className="row mb-5">{/* Content Here */}</div>
         <div className="row mb-3">
           <div className="col-md-4">
-            <Tooltip placement="right" title={<span>Add Student</span>}>
+            <Tooltip
+              placement="right"
+              title={
+                isUpdate ? <span>Edit Student</span> : <span>Add Student</span>
+              }
+            >
               <Button
                 icon={<PlusOutlined className="add-dashboard-btn-icon" />}
                 type="primary"
@@ -374,7 +438,7 @@ class StudentsComponent extends Component {
               />
             </Tooltip>
             <Modal
-              title="Add Student"
+              title={isUpdate ? 'Edit Student' : 'Add Student'}
               centered
               visible={this.state.modal1Visible}
               footer={null}
@@ -390,6 +454,7 @@ class StudentsComponent extends Component {
                       name="stdFname"
                       error={errors.stdFname}
                       onChange={(e) => this.handleFname(e)}
+                      value={stdFname}
                     />
                   </div>
                 </div>
@@ -402,6 +467,7 @@ class StudentsComponent extends Component {
                       name="stdLname"
                       error={errors.stdLname}
                       onChange={(e) => this.handleLname(e)}
+                      value={stdLname}
                     />
                   </div>
                 </div>
@@ -414,6 +480,7 @@ class StudentsComponent extends Component {
                       name="age"
                       error={errors.age}
                       onChange={(e) => this.handleAge(e)}
+                      value={age}
                     />
                   </div>
                 </div>
@@ -426,18 +493,19 @@ class StudentsComponent extends Component {
                       name="MSISDN"
                       error={errors.MSISDN}
                       onChange={(e) => this.handlePhone(e)}
+                      value={MSISDN}
                     />
                   </div>
                 </div>
                 <div className="row txt-box-container">
                   <div>
-                    <span className="input-label">Course</span>
+                    <span className="input-label">Grade</span>
                   </div>
                   <div>
                     <Select
                       value={selectedLevel}
                       onChange={this.handleLevel}
-                      options={levelQuizes}
+                      options={newGrades}
                       className="another-select"
                       isSearchable={false}
                     />
@@ -471,6 +539,8 @@ class StudentsComponent extends Component {
                           color="#fff"
                           className="ml-2"
                         />
+                      ) : isUpdate ? (
+                        'Update'
                       ) : (
                         'Add'
                       )}
